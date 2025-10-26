@@ -620,6 +620,147 @@ function toggleTheme() {
     moonIcon.classList.toggle('hidden', !isDark);
     
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // start/stop universe background to match theme
+    try { startUniverseIfNeeded(); } catch (e) { /* no-op */ }
+}
+
+// --- Universe background (dark theme) ---
+const universe = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    animationId: null,
+    active: false,
+};
+
+function initUniverse() {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    universe.canvas = document.getElementById('universe-canvas');
+    if (!universe.canvas) return;
+    universe.ctx = universe.canvas.getContext('2d');
+
+    // Sizing
+    function resize() {
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        universe.canvas.width = Math.floor(universe.canvas.clientWidth * dpr);
+        universe.canvas.height = Math.floor(universe.canvas.clientHeight * dpr);
+        if (universe.ctx) universe.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', () => {
+        resize();
+        // re-seed particles for new size
+        if (universe.active) createParticles();
+    });
+
+    // Create a modest number of particles; fewer on small screens or reduced motion
+    function createParticles() {
+        const w = universe.canvas.clientWidth;
+        const countBase = Math.max(40, Math.floor(w / 12));
+        const count = Math.min(220, countBase);
+        universe.particles = [];
+        const smallScreen = window.innerWidth < 640;
+        const finalCount = smallScreen ? Math.floor(count * 0.35) : count;
+        for (let i = 0; i < finalCount; i++) {
+            universe.particles.push({
+                x: Math.random() * universe.canvas.clientWidth,
+                y: Math.random() * universe.canvas.clientHeight,
+                z: Math.random() * 1.5 + 0.2,
+                r: Math.random() * 1.6 + 0.3,
+                vx: (Math.random() - 0.5) * 0.2,
+                vy: (Math.random() - 0.5) * 0.2,
+                glow: Math.random() * 0.8 + 0.2,
+            });
+        }
+    }
+
+    function draw() {
+        if (!universe.ctx) return;
+        const ctx = universe.ctx;
+        const w = universe.canvas.clientWidth;
+        const h = universe.canvas.clientHeight;
+
+        // subtle gradient background for depth
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, '#040612');
+        g.addColorStop(0.6, '#07102a');
+        g.addColorStop(1, '#00101a');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        // gentle nebula blobs (cheap, reused)
+        for (let i = 0; i < 3; i++) {
+            const nx = (i + 0.3) * (w / 4);
+            const ny = h * (0.15 + i * 0.18);
+            const rad = Math.min(w, h) * (0.35 - i * 0.08);
+            const ng = ctx.createRadialGradient(nx, ny, rad * 0.05, nx, ny, rad);
+            ng.addColorStop(0, 'rgba(120,86,255,0.18)');
+            ng.addColorStop(0.4, 'rgba(86,160,255,0.06)');
+            ng.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = ng;
+            ctx.beginPath();
+            ctx.arc(nx, ny, rad, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // stars
+        universe.particles.forEach(p => {
+            // simple parallax movement
+            p.x += p.vx * p.z;
+            p.y += p.vy * p.z;
+            if (p.x < -10) p.x = w + 10;
+            if (p.x > w + 10) p.x = -10;
+            if (p.y < -10) p.y = h + 10;
+            if (p.y > h + 10) p.y = -10;
+
+            const alpha = 0.6 * p.glow;
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+            ctx.arc(p.x, p.y, p.r * p.z, 0, Math.PI * 2);
+            ctx.fill();
+            // soft halo
+            const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+            halo.addColorStop(0, `rgba(170,190,255,${0.08 * p.glow})`);
+            halo.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = halo;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    function animate() {
+        if (!universe.active) return;
+        draw();
+        universe.animationId = requestAnimationFrame(animate);
+    }
+
+    // start with created particles
+    createParticles();
+
+    // expose helper functions
+    universe.start = function() {
+        if (universe.active) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // honor reduced motion
+        universe.active = true;
+        createParticles();
+        universe.animationId = requestAnimationFrame(animate);
+    };
+    universe.stop = function() {
+        universe.active = false;
+        if (universe.animationId) cancelAnimationFrame(universe.animationId);
+        universe.animationId = null;
+        // clear canvas for light theme
+        if (universe.ctx) universe.ctx.clearRect(0, 0, universe.canvas.width, universe.canvas.height);
+    };
+}
+
+function startUniverseIfNeeded() {
+    const canvas = document.getElementById('universe-canvas');
+    if (!canvas) return;
+    if (!universe.canvas) initUniverse();
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) universe.start(); else universe.stop();
 }
 
 // Apply saved theme and language on load
@@ -669,4 +810,6 @@ window.addEventListener('DOMContentLoaded', () => {
             else { openFlyout(); }
         });
     }
+    // Start or stop the universe background according to the initial theme
+    try { startUniverseIfNeeded(); } catch (e) { /* no-op */ }
 });

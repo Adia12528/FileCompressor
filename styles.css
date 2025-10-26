@@ -263,6 +263,47 @@ input[type="number"] {
 @media (max-width: 420px) {
     .top-controls .lang-selector #lang-button { height: 40px; padding: 0 8px; font-size: 0.95rem; }
 }
+/* Background container */
+#bg-container { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg-canvas, .bg-dunes { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* ensure app is above background */
+#app { position: relative; z-index: 100; }
+
+/* Dark theme universe canvas visible only in dark mode */
+.bg-canvas { opacity: 0; transition: opacity 0.6s ease; }
+.dark-mode .bg-canvas { opacity: 1; }
+
+/* Light theme dunes visible only in light mode */
+.bg-dunes { opacity: 0; transition: opacity 0.6s ease; }
+.light-only { display: none; }
+.dark-only { display: none; }
+body:not(.dark-mode) .light-only { display: block; opacity: 1; }
+body.dark-mode .dark-only { display: block; opacity: 1; }
+
+/* Dunes styling and subtle animation */
+.bg-dunes { background: linear-gradient(180deg, #fffaf0 0%, #fff4e6 40%, #ffe9bf 100%); }
+.bg-dunes .dune { position: absolute; left: 0; right: 0; width: 140%; height: auto; transform-origin: center bottom; }
+.bg-dunes .dune-1 { bottom: -20vh; animation: duneMove 18s linear infinite; opacity: 0.95; }
+.bg-dunes .dune-2 { bottom: -25vh; animation: duneMove 22s linear infinite reverse; opacity: 0.9; }
+.bg-dunes .dune-3 { bottom: -30vh; animation: duneMove 26s linear infinite; opacity: 0.85; }
+
+@keyframes duneMove {
+    0% { transform: translateX(0) translateY(0) scale(1); }
+    50% { transform: translateX(-6%) translateY(-2%) scale(1.02); }
+    100% { transform: translateX(0) translateY(0) scale(1); }
+}
+
+/* Universe canvas sits behind everything in dark mode */
+.bg-canvas { background: radial-gradient(ellipse at center, rgba(50,20,90,0.4) 0%, rgba(10,6,20,0.8) 60%, #05010a 100%); }
+
+/* Ensure top-controls sits above background */
+.top-controls { z-index: 1050; }
+
+/* Smaller canvas on mobile to reduce CPU */
+@media (max-width: 640px) {
+    .bg-canvas { opacity: 1; }
+}
 
 /* Responsive improvements for mobile devices */
 @media (max-width: 640px) {

@@ -10,6 +10,23 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
+    <!-- Background containers (universe for dark, dunes for light) -->
+    <div id="bg-container" aria-hidden="true">
+        <canvas id="universe-canvas" class="bg-canvas dark-only"></canvas>
+        <div id="dunes" class="bg-dunes light-only">
+            <!-- layered SVG dunes for a summer feel -->
+            <svg class="dune dune-1" viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,120 C150,60 350,180 600,120 C850,60 1050,160 1200,120 L1200,200 L0,200 Z" fill="rgba(255, 223, 134, 0.95)"></path>
+            </svg>
+            <svg class="dune dune-2" viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,140 C200,80 400,200 600,140 C800,80 1000,180 1200,140 L1200,200 L0,200 Z" fill="rgba(255, 244, 199, 0.9)"></path>
+            </svg>
+            <svg class="dune dune-3" viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,160 C250,100 450,220 600,160 C750,100 950,200 1200,160 L1200,200 L0,200 Z" fill="rgba(255, 236, 166, 0.85)"></path>
+            </svg>
+        </div>
+    </div>
+
     <!-- Top controls: theme toggle + language selector -->
     <div class="top-controls">
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
