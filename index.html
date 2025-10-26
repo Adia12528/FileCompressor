@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid File Compressor (Simulation)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg id="sun-icon" class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+        </svg>
+        <svg id="moon-icon" class="w-6 h-6 text-slate-700 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+    </button>
+
+    <div id="app" class="w-full max-w-2xl bg-white shadow-2xl rounded-xl p-6 md:p-10 border border-gray-100 transition-all duration-300 relative">
+        <!-- Language Selector -->
+        <div class="absolute top-4 right-4">
+            <div class="lang-selector">
+                <button id="lang-button" aria-haspopup="true" aria-expanded="false">
+                    <span id="lang-flag">🌐</span>
+                    <span data-i18n="ui.lang"></span>
+                </button>
+                <div class="lang-flyout">
+                    <div class="lang-flyout-content">
+                        <div id="lang-list" class="max-h-64 overflow-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-violet-700" data-i18n="ui.title">One-Click File Optimizer</h1>
+            <p class="text-gray-500 mt-2" data-i18n="ui.subtitle">PDF, DOCX, PPTX, Images, and more. Upload, set your target size, and compress.</p>
+        </header>
+
+        <!-- Step 1: Upload Area -->
+        <div id="upload-section">
+            <label for="file-upload" class="cute-upload-area flex flex-col items-center justify-center h-48 rounded-lg cursor-pointer p-4 text-center">
+                <svg class="w-12 h-12 text-violet-500 mb-3 pulse-animation" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v2a4 4 0 01-4 4h-4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17l-4 4m0 0l-4-4m4 4V7"></path></svg>
+                <p class="mb-2 text-lg text-gray-700 font-semibold" data-i18n="ui.drop">Drag & Drop or <span class="text-violet-600 hover:text-violet-800 transition">Browse Files</span></p>
+                <p class="text-sm text-gray-500" data-i18n="ui.supported">Supported: PDF, DOCX, PPTX, JPG, PNG, up to 50MB</p>
+                <input id="file-upload" type="file" class="hidden" accept=".pdf, .docx, .pptx, .jpg, .jpeg, .png, .zip, .rar" />
+            </label>
+        </div>
+        
+        <!-- Step 2: File Details and Controls (Hidden until file is uploaded) -->
+        <div id="control-section" class="mt-8 space-y-6 hidden">
+            
+            <!-- File Info Card -->
+            <div class="bg-violet-50 border border-violet-200 p-5 rounded-lg shadow-inner">
+                <h3 class="text-xl font-bold text-violet-700 mb-4"><span data-i18n="ui.fileLoaded">File Loaded:</span> <span id="file-name" class="font-normal text-gray-700 text-base"></span></h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="border-r border-violet-300 pr-4">
+                        <p class="text-sm text-gray-500" data-i18n="ui.originalSize">Original Size</p>
+                        <p id="original-size" class="text-2xl font-semibold text-gray-900"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500" data-i18n="ui.fileType">File Type</p>
+                        <p id="file-type" class="text-2xl font-semibold text-gray-900"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Size Input -->
+            <div>
+                <label for="target-size" class="block text-lg font-medium text-gray-700 mb-2" data-i18n="ui.desiredSize">Desired Output Size (MB):</label>
+                <input type="number" id="target-size" value="1.0" min="0.1" step="0.1"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 text-lg p-3 transition duration-150 ease-in-out"
+                        placeholder="e.g., 1.5" data-i18n-placeholder="ui.desiredSize.placeholder">
+                <p class="mt-2 text-sm text-gray-500" data-i18n="ui.desiredSize.help">Enter the maximum size you want the compressed file to be.</p>
+            </div>
+
+            <!-- Action Button -->
+            <button id="compress-button"
+                    class="w-full flex items-center justify-center p-4 border border-transparent rounded-lg shadow-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 font-bold text-lg transition duration-300 ease-in-out"
+                    onclick="handleCompression()">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span data-i18n="ui.simulateButton">Simulate Compression</span>
+            </button>
+        </div>
+
+        <!-- Step 3: Result Area (Hidden until compression is complete) -->
+        <div id="result-section" class="mt-10 p-6 bg-green-50 border border-green-300 rounded-lg shadow-lg hidden">
+            <div class="flex items-center mb-4">
+                <svg class="w-8 h-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h3 class="text-xl font-bold text-green-700" data-i18n="ui.result.title">Compression Complete!</h3>
+            </div>
+            
+            <div class="grid grid-cols-3 text-center gap-4 border-t border-green-200 pt-4">
+                <div>
+                    <p class="text-sm text-gray-500" data-i18n="ui.result.original">Original</p>
+                    <p id="final-original-size" class="text-xl font-medium text-gray-700"></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500" data-i18n="ui.result.compressed">Compressed</p>
+                    <p id="final-compressed-size" class="text-2xl font-bold text-green-700"></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500" data-i18n="ui.result.reduction">Reduction</p>
+                    <p id="reduction-percentage" class="text-xl font-medium text-gray-700"></p>
+                </div>
+            </div>
+
+            <button id="download-button"
+                    class="mt-6 w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition duration-300"
+                    onclick="downloadSimulatedFile()">
+                <span data-i18n="ui.download">Download Compressed File</span>
+            </button>
+            <p class="mt-3 text-center text-sm text-gray-500 cursor-pointer hover:underline" onclick="resetApp()" data-i18n="ui.compressAnother">Compress Another File</p>
+        </div>
+
+          <!-- Loading Overlay -->
+                    <div id="loading-overlay" class="absolute inset-0 bg-white bg-opacity-80 flex flex-col items-center justify-center rounded-xl hidden">
+            <div class="loader"></div>
+                        <p class="mt-4 text-lg font-semibold text-violet-700" data-i18n="ui.loading.title">Compressing File... (Simulation in progress)</p>
+                        <p class="text-sm text-gray-500" data-i18n="ui.loading.subtitle">This would be the real-time server step in production.</p>
+        </div>
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
