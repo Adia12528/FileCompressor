@@ -53,21 +53,22 @@ body {
 }
 
 .theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    /* No fixed positioning — placed inside .top-controls */
+    position: relative;
     width: 50px;
     height: 50px;
     border-radius: 50%;
     background: var(--bg-primary);
     border: 2px solid var(--border-color);
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-md);
     z-index: 1000;
     transition: all 0.3s ease;
+    padding: 0;
+    margin: 0;
 }
 
 .theme-toggle:hover {
@@ -219,3 +220,112 @@ input[type="number"] {
     transition: background 0.2s ease;
 }
 .lang-item-btn:hover { background: var(--bg-secondary); }
+
+/* Top controls: combine theme and language in a fixed container */
+.top-controls {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 1100;
+}
+
+.top-controls .lang-selector { position: relative; }
+
+/* Position flyout under the language button when in the top-controls */
+.top-controls .lang-flyout {
+    top: calc(100% + 6px);
+    right: 0;
+    left: auto;
+    transform: translateY(0);
+    width: 260px;
+}
+
+/* Make the language button align visually with the theme toggle */
+.top-controls .lang-selector #lang-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 50px;
+    padding: 0 10px;
+    border-radius: 9999px;
+}
+
+/* Ensure the theme toggle and language selector don't overlap on small screens */
+@media (max-width: 420px) {
+    .top-controls { gap: 6px; top: 10px; right: 10px; }
+    .theme-toggle { width: 44px; height: 44px; }
+    .top-controls .lang-flyout { width: 220px; }
+}
+
+@media (max-width: 420px) {
+    .top-controls .lang-selector #lang-button { height: 40px; padding: 0 8px; font-size: 0.95rem; }
+}
+
+/* Responsive improvements for mobile devices */
+@media (max-width: 640px) {
+    body {
+        align-items: flex-start; /* keep content from centering vertically on small screens */
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    #app {
+        width: calc(100% - 2rem) !important;
+        max-width: none !important;
+        margin: 0 1rem;
+        padding: 1rem !important;
+        border-radius: 12px;
+    }
+
+    .cute-upload-area {
+        height: auto !important;
+        min-height: 10rem; /* ~160px */
+        padding: 1rem !important;
+        text-align: center;
+    }
+
+    .theme-toggle {
+        width: 44px;
+        height: 44px;
+    }
+
+    header h1 {
+        font-size: 1.375rem; /* smaller headline on phones */
+    }
+
+    .lang-flyout {
+        right: 0 !important;
+        left: 8px !important;
+        width: calc(100% - 32px) !important;
+        max-width: calc(100% - 32px) !important;
+    }
+
+    .lang-flyout-content {
+        padding: 8px !important;
+        border-radius: 10px;
+    }
+
+    #control-section .bg-violet-50,
+    #result-section {
+        padding: 1rem !important;
+    }
+
+    #compress-button, #download-button, #alert-close-btn {
+        padding: 0.9rem 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    /* Ensure loader overlay covers properly on small screens */
+    #loading-overlay {
+        border-radius: 12px;
+    }
+}
+
+/* Slightly larger touch targets for medium screens (tablet) */
+@media (min-width: 641px) and (max-width: 1024px) {
+    #app { padding: 1.5rem !important; }
+    .cute-upload-area { min-height: 12rem; }
+}
