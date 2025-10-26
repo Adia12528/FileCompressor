@@ -1,6 +1,8 @@
 // Global state
 let uploadedFile = null;
 let compressedSize = 0;
+// effects flag (background animations)
+let effectsEnabled = true;
 
 // --- i18n Setup ---
 const LANG_KEY = 'app:lang';
@@ -760,8 +762,52 @@ function startUniverseIfNeeded() {
     if (!canvas) return;
     if (!universe.canvas) initUniverse();
     const isDark = document.body.classList.contains('dark-mode');
-    if (isDark) universe.start(); else universe.stop();
+    if (isDark && effectsEnabled) universe.start(); else universe.stop();
 }
+
+function applyEffectsSetting() {
+    const saved = localStorage.getItem('effects:enabled');
+    effectsEnabled = saved === null ? true : saved === 'true';
+    document.body.classList.toggle('no-effects', !effectsEnabled);
+    // ensure reduced motion preference also takes precedence
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        effectsEnabled = false;
+        document.body.classList.add('no-motion');
+    }
+    const btn = document.getElementById('effects-toggle');
+    if (btn) {
+        btn.setAttribute('aria-pressed', effectsEnabled ? 'true' : 'false');
+        btn.title = effectsEnabled ? 'Background effects: On' : 'Background effects: Off';
+    }
+    startUniverseIfNeeded();
+}
+
+function toggleEffects() {
+    effectsEnabled = !effectsEnabled;
+    localStorage.setItem('effects:enabled', effectsEnabled ? 'true' : 'false');
+    applyEffectsSetting();
+}
+
+// keyboard support for the effects toggle (Enter/Space) - attach during DOMContentLoaded
+function attachEffectsKeyboardSupport() {
+    const btn = document.getElementById('effects-toggle');
+    if (!btn) return;
+    btn.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            toggleEffects();
+        }
+    });
+}
+
+// Pause/resume when the page visibility changes to save CPU/battery
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        try { universe.stop(); } catch (e) {}
+    } else {
+        try { startUniverseIfNeeded(); } catch (e) {}
+    }
+});
 
 // Apply saved theme and language on load
 window.addEventListener('DOMContentLoaded', () => {
@@ -780,6 +826,9 @@ window.addEventListener('DOMContentLoaded', () => {
         applyTranslations(initialLang);
         localStorage.setItem(LANG_KEY, initialLang);
     } catch (_) { /* no-op */ }
+
+    // Effects (background animations)
+    try { applyEffectsSetting(); } catch (e) { /* no-op */ }
 
     // Language flyout interactions with delayed open/close
     const selector = document.querySelector('.lang-selector');
@@ -812,4 +861,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     // Start or stop the universe background according to the initial theme
     try { startUniverseIfNeeded(); } catch (e) { /* no-op */ }
+    // attach keyboard support for effects toggle
+    try { attachEffectsKeyboardSupport(); } catch (e) { /* no-op */ }
 });
