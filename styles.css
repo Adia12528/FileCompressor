@@ -246,27 +246,46 @@ body.effects-paused-hidden .effects-state { opacity: 0.65; }
     .top-controls .lang-flyout { width: 220px; }
 
     /* Mobile: place top-controls in the document flow to avoid overlapping content
-       Keeps controls visible above the app and gives consistent spacing on small screens */
+       Keep controls above the app and organize into two visual rows using wrapping
+       Row 1: theme + language left, effects/paused right
+       Row 2: centered presets that can wrap when needed */
     .top-controls {
         position: static;
         right: auto;
         top: auto;
         left: auto;
-        margin: 0 1rem 0.75rem;
+        margin: 0 1rem 0.85rem;
         width: calc(100% - 2rem);
-        justify-content: space-between;
-        padding: 6px;
-        background: rgba(255,255,255,0.78);
+        padding: 8px;
+        background: rgba(255,255,255,0.9);
         align-items: center;
         gap: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
     }
+    body.dark-mode .top-controls { background: rgba(6,8,20,0.54); }
+
+    /* Ordering to create two logical rows via wrapping */
+    .top-controls > .theme-toggle { order: 1; margin-right: 8px; }
+    .top-controls > .lang-selector { order: 1; margin-right: 6px; }
+    .top-controls > .preset-control { order: 2; flex-basis: 100%; display:flex; justify-content:center; margin:6px 0 0 0 }
+    .top-controls > .effects-control, .top-controls > #paused-badge { order: 3; margin-left: auto }
     body.dark-mode .top-controls { background: rgba(6,8,20,0.48); }
 
-    /* Allow preset buttons to wrap and reduce padding; hide textual labels on very narrow screens */
+    /* Layout ordering so the left toggles, center presets, and right-side controls align nicely */
+    .top-controls > .theme-toggle { order: 1; margin-right: 6px; }
+    .top-controls > .preset-control { order: 2; flex: 1 1 auto; display:flex; justify-content:center; min-width:120px }
+    .top-controls > .effects-control, .top-controls > .paused-badge, .top-controls > .lang-selector { order: 3; display:flex; gap:8px; align-items:center }
+
+    /* Allow preset buttons to wrap and reduce padding; keep icons visible and labels optional on very narrow screens */
     .preset-segment { flex-wrap: wrap; gap:6px; }
-    .preset-btn { padding:6px 8px; font-size:0.88rem; min-width:64px; }
-    .preset-btn span { display:none; }
+    .preset-btn { padding:8px 10px; font-size:0.92rem; min-width:68px; border-radius:10px }
     .preset-btn svg { width:18px; height:18px; }
+    @media (max-width: 420px){ .preset-btn { padding:6px 8px; font-size:0.88rem } }
+    @media (max-width: 340px){ .preset-btn span { display:none; } }
 
     .top-controls .lang-selector #lang-button { height:40px; padding:0 8px; min-width:48px; }
 
