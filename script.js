@@ -21,6 +21,10 @@ const languages = [
 
 const translations = {
     en: {
+        'ui.effects.label': 'Effects',
+        'ui.effects.on': 'On',
+        'ui.effects.paused': 'Paused',
+        'ui.effects.off': 'Off',
         'ui.lang': 'Language',
         'ui.title': 'One-Click File Optimizer',
         'ui.subtitle': 'PDF, DOCX, PPTX, Images, and more. Upload, set your target size, and compress.',
@@ -53,6 +57,10 @@ const translations = {
     },
     es: {
         'ui.lang': 'Idioma',
+        'ui.effects.label': 'Efectos',
+        'ui.effects.on': 'Activado',
+        'ui.effects.off': 'Desactivado',
+        'ui.effects.paused': 'Pausado',
         'ui.title': 'Optimizador de Archivos en Un Clic',
         'ui.subtitle': 'PDF, DOCX, PPTX, Imágenes y más. Sube, define el tamaño objetivo y comprime.',
         'ui.drop': 'Arrastra y suelta o <span class="text-violet-600 hover:text-violet-800 transition">Explorar archivos</span>',
@@ -84,6 +92,10 @@ const translations = {
     },
     fr: {
         'ui.lang': 'Langue',
+        'ui.effects.label': 'Effets',
+        'ui.effects.on': 'Activé',
+        'ui.effects.off': 'Désactivé',
+        'ui.effects.paused': 'En pause',
         'ui.title': 'Optimiseur de fichiers en un clic',
         'ui.subtitle': 'PDF, DOCX, PPTX, images, etc. Téléversez, définissez la taille cible et compressez.',
         'ui.drop': 'Glisser-déposer ou <span class="text-violet-600 hover:text-violet-800 transition">Parcourir les fichiers</span>',
@@ -115,6 +127,10 @@ const translations = {
     },
     de: {
         'ui.lang': 'Sprache',
+        'ui.effects.label': 'Effekte',
+        'ui.effects.on': 'Ein',
+        'ui.effects.off': 'Aus',
+        'ui.effects.paused': 'Pausiert',
         'ui.title': 'Dateioptimierer mit einem Klick',
         'ui.subtitle': 'PDF, DOCX, PPTX, Bilder und mehr. Hochladen, Zielgröße festlegen und komprimieren.',
         'ui.drop': 'Ziehen & Ablegen oder <span class="text-violet-600 hover:text-violet-800 transition">Dateien durchsuchen</span>',
@@ -146,6 +162,10 @@ const translations = {
     },
     zh: {
         'ui.lang': '语言',
+        'ui.effects.label': '效果',
+        'ui.effects.on': '开启',
+        'ui.effects.off': '关闭',
+        'ui.effects.paused': '已暂停',
         'ui.title': '一键文件优化器',
         'ui.subtitle': '支持 PDF、DOCX、PPTX、图片等。上传、设置目标大小并压缩。',
         'ui.drop': '拖放或 <span class="text-violet-600 hover:text-violet-800 transition">浏览文件</span>',
@@ -177,6 +197,10 @@ const translations = {
     },
     ar: {
         'ui.lang': 'اللغة',
+        'ui.effects.label': 'التأثيرات',
+        'ui.effects.on': 'تشغيل',
+        'ui.effects.off': 'إيقاف',
+        'ui.effects.paused': 'موقوف',
         'ui.title': 'محسّن الملفات بنقرة واحدة',
         'ui.subtitle': 'PDF وDOCX وPPTX وصور أخرى. ارفع الملف وحدد الحجم المطلوب ثم اضغط ضغط.',
         'ui.drop': 'اسحب وأفلت أو <span class="text-violet-600 hover:text-violet-800 transition">تصفح الملفات</span>',
@@ -208,6 +232,10 @@ const translations = {
     },
     ru: {
         'ui.lang': 'Язык',
+        'ui.effects.label': 'Эффекты',
+        'ui.effects.on': 'Вкл',
+        'ui.effects.off': 'Выкл',
+        'ui.effects.paused': 'Приостановлено',
         'ui.title': 'Оптимизатор файлов в один клик',
         'ui.subtitle': 'PDF, DOCX, PPTX, изображения и др. Загрузите, задайте целевой размер и сжимайте.',
         'ui.drop': 'Перетащите файл или <span class="text-violet-600 hover:text-violet-800 transition">выберите файлы</span>',
@@ -239,6 +267,10 @@ const translations = {
     },
     pt: {
         'ui.lang': 'Idioma',
+        'ui.effects.label': 'Efeitos',
+        'ui.effects.on': 'Ligado',
+        'ui.effects.off': 'Desligado',
+        'ui.effects.paused': 'Pausado',
         'ui.title': 'Otimizador de Arquivos com Um Clique',
         'ui.subtitle': 'PDF, DOCX, PPTX, imagens e muito mais. Envie, defina o tamanho alvo e comprima.',
         'ui.drop': 'Arraste e solte ou <span class="text-violet-600 hover:text-violet-800 transition">Procurar arquivos</span>',
@@ -270,6 +302,10 @@ const translations = {
     },
     hi: {
         'ui.lang': 'भाषा',
+        'ui.effects.label': 'प्रभाव',
+        'ui.effects.on': 'चालू',
+        'ui.effects.off': 'बंद',
+        'ui.effects.paused': 'रुका हुआ',
         'ui.title': 'वन-क्लिक फ़ाइल ऑप्टिमाइज़र',
         'ui.subtitle': 'PDF, DOCX, PPTX, इमेज आदि। अपलोड करें, लक्ष्य आकार सेट करें और कंप्रेस करें।',
         'ui.drop': 'ड्रैग और ड्रॉप करें या <span class="text-violet-600 hover:text-violet-800 transition">फाइल ब्राउज़ करें</span>',
@@ -301,6 +337,10 @@ const translations = {
     },
     ja: {
         'ui.lang': '言語',
+        'ui.effects.label': 'エフェクト',
+        'ui.effects.on': 'オン',
+        'ui.effects.off': 'オフ',
+        'ui.effects.paused': '一時停止',
         'ui.title': 'ワンクリック・ファイル最適化',
         'ui.subtitle': 'PDF、DOCX、PPTX、画像など。アップロードして目標サイズを設定し、圧縮します。',
         'ui.drop': 'ドラッグ＆ドロップ または <span class="text-violet-600 hover:text-violet-800 transition">ファイルを選択</span>',
@@ -635,6 +675,162 @@ const universe = {
     active: false,
 };
 
+// Visual presets for the universe background. Values adjust density, spark frequency, color ranges, and motion.
+const PRESET_KEY = 'effects:preset';
+const VISUAL_PRESETS = {
+    subtle: {
+        densityDiv: 12,
+        maxCount: 220,
+        countMin: 40,
+        smallScreenFactor: 0.35,
+        sparkFreq: 0.06,
+        zMin: 0.3,
+        zRange: 1.6,
+        rSparkMin: 2, rSparkMax: 4,
+        rStarMin: 0.3, rStarMax: 1.9,
+        vxSpark: 0.05, vxStar: 0.25,
+        vySpark: 0.02, vyStar: 0.2,
+        glowMin: 0.2, glowMax: 1.1,
+        twinkleBase: 0.6, twinkleVar: 1.6,
+        hueStarMin: 200, hueStarRange: 70,
+        hueSparkMin: 30, hueSparkRange: 20
+    },
+    cinematic: {
+        densityDiv: 7,
+        maxCount: 420,
+        countMin: 80,
+        smallScreenFactor: 0.5,
+        sparkFreq: 0.14,
+        zMin: 0.2,
+        zRange: 2.0,
+        rSparkMin: 1.8, rSparkMax: 4.4,
+        rStarMin: 0.4, rStarMax: 3.4,
+        vxSpark: 0.28, vxStar: 0.6,
+        vySpark: 0.10, vyStar: 0.42,
+        glowMin: 0.6, glowMax: 1.2,
+        twinkleBase: 0.8, twinkleVar: 2.0,
+        hueStarMin: 160, hueStarRange: 140,
+        hueSparkMin: 30, hueSparkRange: 40
+    },
+    dramatic: {
+        densityDiv: 5,
+        maxCount: 600,
+        countMin: 120,
+        smallScreenFactor: 0.55,
+        sparkFreq: 0.22,
+        zMin: 0.1,
+        zRange: 2.6,
+        rSparkMin: 2.2, rSparkMax: 5.6,
+        rStarMin: 0.6, rStarMax: 4.0,
+        vxSpark: 0.42, vxStar: 0.9,
+        vySpark: 0.18, vyStar: 0.6,
+        glowMin: 0.7, glowMax: 1.4,
+        twinkleBase: 0.9, twinkleVar: 2.6,
+        hueStarMin: 140, hueStarRange: 160,
+        hueSparkMin: 18, hueSparkRange: 60
+    }
+};
+
+let currentVisualPreset = localStorage.getItem(PRESET_KEY) || 'cinematic';
+
+// Nebula palettes for canvas backgrounds per preset
+const NEBULA_PALETTES = {
+    subtle: [
+        ['rgba(140,160,200,0.12)', 'rgba(110,140,180,0.04)'],
+        ['rgba(220,200,170,0.04)', 'rgba(220,200,170,0.01)'],
+        ['rgba(180,190,210,0.06)', 'rgba(160,170,200,0.02)']
+    ],
+    cinematic: [
+        ['rgba(180,120,255,0.16)', 'rgba(110,180,255,0.06)'],
+        ['rgba(255,170,110,0.08)', 'rgba(255,110,80,0.02)'],
+        ['rgba(90,160,200,0.10)', 'rgba(70,100,220,0.05)']
+    ],
+    dramatic: [
+        ['rgba(220,100,255,0.22)', 'rgba(140,200,255,0.10)'],
+        ['rgba(255,140,60,0.14)', 'rgba(255,90,40,0.06)'],
+        ['rgba(120,190,230,0.14)', 'rgba(90,120,240,0.08)']
+    ]
+};
+
+// Dune visual adjustments for light theme per preset
+const DUNE_PRESETS = {
+    subtle: {
+        fills: ['rgba(255, 223, 134, 0.8)', 'rgba(255, 244, 199, 0.75)', 'rgba(255, 236, 166, 0.7)'],
+        speeds: [24, 28, 32]
+    },
+    cinematic: {
+        fills: ['rgba(255, 223, 134, 0.95)', 'rgba(255, 244, 199, 0.9)', 'rgba(255, 236, 166, 0.85)'],
+        speeds: [20, 26, 30]
+    },
+    dramatic: {
+        fills: ['rgba(255, 200, 100, 0.98)', 'rgba(255, 230, 160, 0.95)', 'rgba(255, 210, 120, 0.9)'],
+        speeds: [16, 20, 24]
+    }
+};
+
+const PRESET_DESCRIPTIONS = {
+    subtle: 'Subtle — low density, gentle motion and soft halos. Good for low-power devices and when you want an unobtrusive background.',
+    cinematic: 'Cinematic — balanced density with richer nebula colors and warm sparks for depth. Good default for a polished look.',
+    dramatic: 'Dramatic — high density, bold warm sparks and larger halos for a cinematic, high-impact background. Uses more CPU.'
+};
+
+function applyVisualPresetToUI() {
+    // Update segmented button UI to reflect currentVisualPreset
+    const buttons = document.querySelectorAll('.preset-btn');
+    buttons.forEach(btn => {
+        const name = btn.getAttribute('data-preset');
+        const active = name === currentVisualPreset;
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        if (active) btn.classList.add('active'); else btn.classList.remove('active');
+    });
+}
+
+function showPresetHelp(name) {
+    try {
+        const el = document.getElementById('preset-help');
+        if (!el) return;
+        el.textContent = PRESET_DESCRIPTIONS[name] || '';
+    } catch (e) { /* no-op */ }
+}
+
+function setVisualPreset(name) {
+    if (!VISUAL_PRESETS[name]) name = 'cinematic';
+    currentVisualPreset = name;
+    localStorage.setItem(PRESET_KEY, name);
+    applyVisualPresetToUI();
+    showPresetHelp(name);
+    // update body class for stylesheet hooks and state
+    try {
+        document.body.classList.remove('preset-subtle','preset-cinematic','preset-dramatic');
+        document.body.classList.add('preset-' + name);
+    } catch (e) {}
+    // Update dunes for light theme to reflect preset
+    try { updateDunesForPreset(name); } catch (e) {}
+    // if universe is active, re-seed particles for immediate feedback
+    try { if (universe.active) createParticles(); } catch (e) { /* no-op */ }
+}
+
+function updateDunesForPreset(name) {
+    const cfg = DUNE_PRESETS[name] || DUNE_PRESETS.cinematic;
+    const dunes = document.querySelectorAll('#dunes svg .dune, #dunes svg path');
+    // prefer targeting the path elements inside svg
+    const paths = document.querySelectorAll('#dunes svg path');
+    if (paths && paths.length) {
+        paths.forEach((p, i) => {
+            const fill = cfg.fills[i] || cfg.fills[ i % cfg.fills.length ];
+            p.setAttribute('fill', fill);
+            // adjust opacity slightly from fill alpha
+            p.style.opacity = 0.9 - (i * 0.05);
+        });
+    }
+    // adjust animation speeds if present by changing inline style on svg elements
+    const svgs = document.querySelectorAll('#dunes svg');
+    svgs.forEach((s, i) => {
+        const dur = (cfg.speeds[i] || cfg.speeds[0]) + 's';
+        s.style.animationDuration = dur;
+    });
+}
+
 function initUniverse() {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     universe.canvas = document.getElementById('universe-canvas');
@@ -656,22 +852,44 @@ function initUniverse() {
     });
 
     // Create a modest number of particles; fewer on small screens or reduced motion
+    // Cinematic particle seeder: denser, richer colors, and more prominent sparks
     function createParticles() {
         const w = universe.canvas.clientWidth;
-        const countBase = Math.max(40, Math.floor(w / 12));
-        const count = Math.min(220, countBase);
+        const preset = VISUAL_PRESETS[currentVisualPreset] || VISUAL_PRESETS.cinematic;
+        // base count derived from width and preset density
+        const countBase = Math.max(preset.countMin || 40, Math.floor(w / preset.densityDiv));
+        const count = Math.min(preset.maxCount, countBase);
         universe.particles = [];
         const smallScreen = window.innerWidth < 640;
-        const finalCount = smallScreen ? Math.floor(count * 0.35) : count;
+        const finalCount = smallScreen ? Math.floor(count * preset.smallScreenFactor) : count;
         for (let i = 0; i < finalCount; i++) {
+            const isSpark = Math.random() < preset.sparkFreq;
+            const z = preset.zMin + Math.random() * preset.zRange;
+
+            const r = Math.random() * (isSpark ? (preset.rSparkMax - preset.rSparkMin) : (preset.rStarMax - preset.rStarMin)) + (isSpark ? preset.rSparkMin : preset.rStarMin);
+
+            const vx = (Math.random() - 0.5) * (isSpark ? preset.vxSpark : preset.vxStar);
+            const vy = (Math.random() - 0.5) * (isSpark ? preset.vySpark : preset.vyStar);
+
+            let hue;
+            if (isSpark) {
+                hue = preset.hueSparkMin + Math.random() * (preset.hueSparkRange || 30);
+            } else {
+                hue = preset.hueStarMin + Math.random() * (preset.hueStarRange || 80);
+            }
+
             universe.particles.push({
                 x: Math.random() * universe.canvas.clientWidth,
                 y: Math.random() * universe.canvas.clientHeight,
-                z: Math.random() * 1.5 + 0.2,
-                r: Math.random() * 1.6 + 0.3,
-                vx: (Math.random() - 0.5) * 0.2,
-                vy: (Math.random() - 0.5) * 0.2,
-                glow: Math.random() * 0.8 + 0.2,
+                z: z,
+                r: r,
+                vx: vx,
+                vy: vy,
+                glow: (preset.glowMin || 0.4) + Math.random() * ((preset.glowMax || 1.0) - (preset.glowMin || 0.4)),
+                phase: Math.random() * Math.PI * 2,
+                twinkleSpeed: (preset.twinkleBase || 0.6) + Math.random() * (preset.twinkleVar || 1.6),
+                hue: Math.floor(hue),
+                type: isSpark ? 'spark' : 'star'
             });
         }
     }
@@ -681,53 +899,107 @@ function initUniverse() {
         const ctx = universe.ctx;
         const w = universe.canvas.clientWidth;
         const h = universe.canvas.clientHeight;
+        const t = performance.now() / 1000;
 
-        // subtle gradient background for depth
+        // cinematic gradient background for dramatic depth
         const g = ctx.createLinearGradient(0, 0, 0, h);
-        g.addColorStop(0, '#040612');
-        g.addColorStop(0.6, '#07102a');
-        g.addColorStop(1, '#00101a');
+        g.addColorStop(0, '#02020a');
+        g.addColorStop(0.35, '#0b1026');
+        g.addColorStop(0.65, '#07183a');
+        g.addColorStop(1, '#001420');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
 
-        // gentle nebula blobs (cheap, reused)
-        for (let i = 0; i < 3; i++) {
-            const nx = (i + 0.3) * (w / 4);
-            const ny = h * (0.15 + i * 0.18);
-            const rad = Math.min(w, h) * (0.35 - i * 0.08);
-            const ng = ctx.createRadialGradient(nx, ny, rad * 0.05, nx, ny, rad);
-            ng.addColorStop(0, 'rgba(120,86,255,0.18)');
-            ng.addColorStop(0.4, 'rgba(86,160,255,0.06)');
-            ng.addColorStop(1, 'rgba(0,0,0,0)');
+        // layered nebula blobs — palette depends on the selected preset
+        const palette = NEBULA_PALETTES[currentVisualPreset] || NEBULA_PALETTES.cinematic;
+        const nebulaLayers = [
+            { ox: 0.18, oy: 0.12, scale: 0.42, stops: [ [palette[0][0], 0], [palette[0][1], 0.45], ['rgba(0,0,0,0)', 1] ] },
+            { ox: 0.62, oy: 0.22, scale: 0.38, stops: [ [palette[1][0], 0], [palette[1][1], 0.4], ['rgba(0,0,0,0)', 1] ] },
+            { ox: 0.42, oy: 0.46, scale: 0.5, stops: [ [palette[2][0], 0], [palette[2][1], 0.5], ['rgba(0,0,0,0)', 1] ] }
+        ];
+        nebulaLayers.forEach((layer, i) => {
+            const nx = layer.ox * w;
+            const ny = layer.oy * h;
+            const rad = Math.min(w, h) * layer.scale;
+            const ng = ctx.createRadialGradient(nx, ny, rad * 0.03, nx, ny, rad);
+            layer.stops.forEach(s => ng.addColorStop(s[1], s[0]));
             ctx.fillStyle = ng;
             ctx.beginPath();
             ctx.arc(nx, ny, rad, 0, Math.PI * 2);
             ctx.fill();
-        }
+            // extra soft light for cinematic glow
+            ctx.globalCompositeOperation = 'lighter';
+            const glow = ctx.createRadialGradient(nx, ny, 0, nx, ny, rad * 1.6);
+            const glowColor = layer.stops[0] ? layer.stops[0][0] : 'rgba(180,120,255,0.04)';
+            // use a very transparent version of the first stop for glow
+            const glowRGBA = glowColor.replace('rgb', 'rgba').replace(')', '').replace(')', '');
+            // fallback glow
+            glow.addColorStop(0, 'rgba(180,120,255,0.04)');
+            glow.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(nx, ny, rad * 1.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+        });
 
         // stars
         universe.particles.forEach(p => {
-            // simple parallax movement
-            p.x += p.vx * p.z;
-            p.y += p.vy * p.z;
-            if (p.x < -10) p.x = w + 10;
-            if (p.x > w + 10) p.x = -10;
-            if (p.y < -10) p.y = h + 10;
-            if (p.y > h + 10) p.y = -10;
+            // movement with slight depth modulation
+            p.x += p.vx * (1 + p.z * 0.08);
+            p.y += p.vy * (1 + p.z * 0.08);
+            if (p.x < -12) p.x = w + 12;
+            if (p.x > w + 12) p.x = -12;
+            if (p.y < -12) p.y = h + 12;
+            if (p.y > h + 12) p.y = -12;
 
-            const alpha = 0.6 * p.glow;
-            ctx.beginPath();
-            ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-            ctx.arc(p.x, p.y, p.r * p.z, 0, Math.PI * 2);
-            ctx.fill();
-            // soft halo
-            const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
-            halo.addColorStop(0, `rgba(170,190,255,${0.08 * p.glow})`);
-            halo.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = halo;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
-            ctx.fill();
+            // twinkle
+            const tw = 0.6 + 0.45 * Math.sin(t * p.twinkleSpeed + p.phase);
+
+            if (p.type === 'spark') {
+                // cinematic sparks: warm, slightly larger, with stronger halo
+                const alpha = Math.min(1, 0.85 * p.glow * tw + 0.12);
+                // core
+                ctx.beginPath();
+                ctx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+                // bright inner ring
+                const inner = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+                inner.addColorStop(0, `hsla(${p.hue},100%,70%,${0.28 * p.glow * tw})`);
+                inner.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = inner;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+                ctx.fill();
+                // soft outer halo
+                ctx.globalCompositeOperation = 'lighter';
+                const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 12);
+                halo.addColorStop(0, `hsla(${p.hue},90%,65%,${0.06 * p.glow * tw})`);
+                halo.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = halo;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * 12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalCompositeOperation = 'source-over';
+            } else {
+                const alpha = 0.5 * p.glow * tw;
+                // star core (slightly colored by hue for cinematic depth)
+                ctx.beginPath();
+                ctx.fillStyle = `hsla(${p.hue}, 90%, 88%, ${alpha})`;
+                ctx.arc(p.x, p.y, (p.r * p.z), 0, Math.PI * 2);
+                ctx.fill();
+                // colored halo
+                ctx.globalCompositeOperation = 'lighter';
+                const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 9);
+                halo.addColorStop(0, `hsla(${p.hue},80%,70%,${0.06 * p.glow * tw})`);
+                halo.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = halo;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * 9, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalCompositeOperation = 'source-over';
+            }
         });
     }
 
@@ -777,8 +1049,20 @@ function applyEffectsSetting() {
     const btn = document.getElementById('effects-toggle');
     if (btn) {
         btn.setAttribute('aria-pressed', effectsEnabled ? 'true' : 'false');
-        btn.title = effectsEnabled ? 'Background effects: On' : 'Background effects: Off';
+        // localized title using translations
+        const label = t('ui.effects.label') || 'Effects';
+        const onText = t('ui.effects.on') || 'On';
+        const offText = t('ui.effects.off') || 'Off';
+        btn.title = `${label}: ${effectsEnabled ? onText : offText}`;
+        // also update aria-label for screen readers
+        btn.setAttribute('aria-label', `${label}: ${effectsEnabled ? onText : offText}`);
     }
+    // update visible state label
+    const state = document.getElementById('effects-state');
+    if (state) state.textContent = effectsEnabled ? t('ui.effects.on') || 'On' : t('ui.effects.off') || 'Off';
+    // update paused badge title too
+    const pausedBadge = document.getElementById('paused-badge');
+    if (pausedBadge) pausedBadge.title = t('ui.effects.paused') || 'Paused';
     startUniverseIfNeeded();
 }
 
@@ -802,9 +1086,20 @@ function attachEffectsKeyboardSupport() {
 
 // Pause/resume when the page visibility changes to save CPU/battery
 document.addEventListener('visibilitychange', () => {
+    const pausedBadge = document.getElementById('paused-badge');
     if (document.hidden) {
         try { universe.stop(); } catch (e) {}
+        document.body.classList.add('effects-paused-hidden');
+        if (pausedBadge) {
+            pausedBadge.setAttribute('aria-hidden', 'false');
+            pausedBadge.title = t('ui.effects.paused') || 'Paused';
+        }
     } else {
+        document.body.classList.remove('effects-paused-hidden');
+        if (pausedBadge) {
+            pausedBadge.setAttribute('aria-hidden', 'true');
+            pausedBadge.title = t('ui.effects.paused') || 'Paused';
+        }
         try { startUniverseIfNeeded(); } catch (e) {}
     }
 });
@@ -829,6 +1124,61 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Effects (background animations)
     try { applyEffectsSetting(); } catch (e) { /* no-op */ }
+
+    // Visual preset segmented control wiring
+    try {
+        // ensure currentVisualPreset is set from storage at load
+        if (!currentVisualPreset) currentVisualPreset = localStorage.getItem(PRESET_KEY) || 'cinematic';
+        applyVisualPresetToUI();
+        const buttons = document.querySelectorAll('.preset-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (ev) => {
+                const name = btn.getAttribute('data-preset');
+                setVisualPreset(name);
+                applyVisualPresetToUI();
+            });
+            // keyboard support for accessibility (Enter / Space)
+            btn.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    const name = btn.getAttribute('data-preset');
+                    setVisualPreset(name);
+                    applyVisualPresetToUI();
+                }
+            });
+            // left/right arrow navigation between presets
+            btn.addEventListener('keydown', (ev) => {
+                if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+                    ev.preventDefault();
+                    const all = Array.from(document.querySelectorAll('.preset-btn'));
+                    const idx = all.indexOf(ev.currentTarget);
+                    if (idx === -1) return;
+                    const dir = ev.key === 'ArrowLeft' ? -1 : 1;
+                    const next = (idx + dir + all.length) % all.length;
+                    const nextBtn = all[next];
+                    nextBtn.focus();
+                    const name = nextBtn.getAttribute('data-preset');
+                    setVisualPreset(name);
+                    applyVisualPresetToUI();
+                }
+            });
+            // hover/focus show description
+            btn.addEventListener('mouseenter', (ev) => {
+                const name = btn.getAttribute('data-preset');
+                showPresetHelp(name);
+            });
+            btn.addEventListener('mouseleave', (ev) => {
+                showPresetHelp(currentVisualPreset);
+            });
+            btn.addEventListener('focus', (ev) => {
+                const name = btn.getAttribute('data-preset');
+                showPresetHelp(name);
+            });
+            btn.addEventListener('blur', (ev) => {
+                showPresetHelp(currentVisualPreset);
+            });
+        });
+    } catch (e) { /* no-op */ }
 
     // Language flyout interactions with delayed open/close
     const selector = document.querySelector('.lang-selector');
@@ -863,4 +1213,8 @@ window.addEventListener('DOMContentLoaded', () => {
     try { startUniverseIfNeeded(); } catch (e) { /* no-op */ }
     // attach keyboard support for effects toggle
     try { attachEffectsKeyboardSupport(); } catch (e) { /* no-op */ }
+    // show help for the initial preset
+    try { showPresetHelp(currentVisualPreset); } catch (e) {}
+    // apply dunes and body class for initial preset so light theme reflects it
+    try { document.body.classList.add('preset-' + currentVisualPreset); updateDunesForPreset(currentVisualPreset); } catch (e) {}
 });

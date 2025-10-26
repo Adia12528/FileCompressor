@@ -37,10 +37,33 @@
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
             </svg>
         </button>
+        
+        <div class="preset-control">
+            <span class="sr-only" id="visual-preset-label">Visual Preset</span>
+            <div class="preset-segment" role="tablist" aria-labelledby="visual-preset-label">
+                <button class="preset-btn" data-preset="subtle" role="tab" aria-pressed="false" title="Subtle — low density, gentle motion">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Subtle</span>
+                </button>
+                <button class="preset-btn" data-preset="cinematic" role="tab" aria-pressed="false" title="Cinematic — richer colors, medium density">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 11-9-9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Cinematic</span>
+                </button>
+                <button class="preset-btn" data-preset="dramatic" role="tab" aria-pressed="false" title="Dramatic — high density, bold sparks">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Dramatic</span>
+                </button>
+            </div>
+        </div>
 
-        <button id="effects-toggle" class="effects-toggle" onclick="toggleEffects()" aria-pressed="true" aria-label="Toggle background effects" title="Toggle background effects">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M6.343 6.343L4.93 4.93M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
-        </button>
+        <div class="effects-control">
+            <button id="effects-toggle" class="effects-toggle" onclick="toggleEffects()" aria-pressed="true" aria-label="Toggle background effects" title="Toggle background effects">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M6.343 6.343L4.93 4.93M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+            </button>
+            <span id="effects-state" class="effects-state" aria-live="polite"></span>
+        </div>
+
+        <div id="paused-badge" class="paused-badge" aria-hidden="true" title="Background effects paused">⏸</div>
 
         <div class="lang-selector">
             <button id="lang-button" aria-haspopup="true" aria-expanded="false">
