@@ -860,16 +860,22 @@ function initUniverse() {
         const countBase = Math.max(preset.countMin || 40, Math.floor(w / preset.densityDiv));
         const count = Math.min(preset.maxCount, countBase);
         universe.particles = [];
-        const smallScreen = window.innerWidth < 640;
-        const finalCount = smallScreen ? Math.floor(count * preset.smallScreenFactor) : count;
+    const smallScreen = window.innerWidth < 640;
+    // further reduce particles for very small devices to preserve performance
+    let finalCount = smallScreen ? Math.floor(count * (preset.smallScreenFactor || 0.6)) : count;
+    if (window.innerWidth < 420) finalCount = Math.max(12, Math.floor(finalCount * 0.55));
         for (let i = 0; i < finalCount; i++) {
             const isSpark = Math.random() < preset.sparkFreq;
             const z = preset.zMin + Math.random() * preset.zRange;
 
-            const r = Math.random() * (isSpark ? (preset.rSparkMax - preset.rSparkMin) : (preset.rStarMax - preset.rStarMin)) + (isSpark ? preset.rSparkMin : preset.rStarMin);
+            let r = Math.random() * (isSpark ? (preset.rSparkMax - preset.rSparkMin) : (preset.rStarMax - preset.rStarMin)) + (isSpark ? preset.rSparkMin : preset.rStarMin);
+            // scale down radii on very small screens
+            if (window.innerWidth < 420) r = Math.max(0.6, r * 0.75);
 
             const vx = (Math.random() - 0.5) * (isSpark ? preset.vxSpark : preset.vxStar);
             const vy = (Math.random() - 0.5) * (isSpark ? preset.vySpark : preset.vyStar);
+            // reduce velocity slightly on tiny screens to avoid large travel across small canvases
+            const velocityScale = window.innerWidth < 420 ? 0.7 : 1;
 
             let hue;
             if (isSpark) {
@@ -883,8 +889,8 @@ function initUniverse() {
                 y: Math.random() * universe.canvas.clientHeight,
                 z: z,
                 r: r,
-                vx: vx,
-                vy: vy,
+                vx: vx * velocityScale,
+                vy: vy * velocityScale,
                 glow: (preset.glowMin || 0.4) + Math.random() * ((preset.glowMax || 1.0) - (preset.glowMin || 0.4)),
                 phase: Math.random() * Math.PI * 2,
                 twinkleSpeed: (preset.twinkleBase || 0.6) + Math.random() * (preset.twinkleVar || 1.6),

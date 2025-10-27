@@ -281,11 +281,12 @@ body.effects-paused-hidden .effects-state { opacity: 0.65; }
     .top-controls > .effects-control, .top-controls > .paused-badge, .top-controls > .lang-selector { order: 3; display:flex; gap:8px; align-items:center }
 
     /* Allow preset buttons to wrap and reduce padding; keep icons visible and labels optional on very narrow screens */
-    .preset-segment { flex-wrap: wrap; gap:6px; }
-    .preset-btn { padding:8px 10px; font-size:0.92rem; min-width:68px; border-radius:10px }
+    .preset-segment { flex-wrap: wrap; gap:8px; }
+    .preset-btn { padding:10px 12px; font-size:0.95rem; min-width:72px; border-radius:12px; color:var(--text-secondary) }
     .preset-btn svg { width:18px; height:18px; }
-    @media (max-width: 420px){ .preset-btn { padding:6px 8px; font-size:0.88rem } }
-    @media (max-width: 340px){ .preset-btn span { display:none; } }
+    /* Preserve labels for most phone sizes for clarity; hide only on the smallest narrow phones */
+    @media (max-width: 420px){ .preset-btn { padding:8px 10px; font-size:0.88rem; } }
+    @media (max-width: 360px){ .preset-btn span { display:none; } }
 
     .top-controls .lang-selector #lang-button { height:40px; padding:0 8px; min-width:48px; }
 
@@ -360,9 +361,9 @@ body.effects-paused-hidden .effects-state { opacity: 0.65; }
     }
 
     /* Reduce dune vertical offsets and slow animations slightly on phones so they don't feel overpowering */
-    .bg-dunes .dune-1{ bottom:-12vh; animation-duration:22s }
-    .bg-dunes .dune-2{ bottom:-16vh; animation-duration:28s }
-    .bg-dunes .dune-3{ bottom:-20vh; animation-duration:30s }
+    .bg-dunes .dune-1{ bottom:-10vh; animation-duration:26s }
+    .bg-dunes .dune-2{ bottom:-14vh; animation-duration:30s }
+    .bg-dunes .dune-3{ bottom:-18vh; animation-duration:34s }
 
     /* Ensure canvas scales and doesn't overflow on mobile */
     .bg-canvas { background-size: cover; }
