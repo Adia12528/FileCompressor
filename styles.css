@@ -161,39 +161,636 @@ body{
         transition: opacity 0.8s ease, visibility 0.8s ease;
         pointer-events: none;
         z-index: 1;
-        display: none;
+        display: none !important;
     }
 
     /* Ensure scenes are block in light mode */
     body:not(.dark-mode) .bg-scene {
-        display: block;
+        display: block !important;
     }
 
-    .scene-canvas {
+    /* Show scenes based on preset class on body - VERY SPECIFIC */
+    body.preset-subtle:not(.dark-mode) #scene-subtle {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+        display: block !important;
+    }
+
+    body.preset-cinematic:not(.dark-mode) #scene-cinematic {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+        display: block !important;
+    }
+
+    body.preset-dramatic:not(.dark-mode) #scene-dramatic {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+        display: block !important;
+    }
+
+    /* ========== SUBTLE SCENE (HORSE RIDING) ========== */
+    .subtle-sky {
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
+        background: linear-gradient(180deg, #FFE5B4 0%, #FFF4E0 50%, #FFEAA7 100%);
     }
 
-    /* Show scenes based on preset class on body */
-    body:not(.dark-mode).preset-subtle #scene-subtle {
-        opacity: 1 !important;
-        visibility: visible !important;
-        z-index: 1 !important;
+    .sun {
+        position: absolute;
+        top: 20%;
+        right: 25%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(255, 240, 150, 0.95) 0%, rgba(255, 220, 100, 0.7) 50%, rgba(255, 200, 80, 0) 100%);
+        border-radius: 50%;
+        animation: sunGlow 3s infinite ease-in-out;
     }
 
-    body:not(.dark-mode).preset-cinematic #scene-cinematic {
-        opacity: 1 !important;
-        visibility: visible !important;
-        z-index: 1 !important;
+    @keyframes sunGlow {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.05); opacity: 1; }
     }
 
-    body:not(.dark-mode).preset-dramatic #scene-dramatic {
-        opacity: 1 !important;
-        visibility: visible !important;
-        z-index: 1 !important;
+    .sun-ray {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 3px;
+        height: 80px;
+        background: linear-gradient(180deg, rgba(255, 230, 100, 0.6) 0%, transparent 100%);
+        transform-origin: 0 0;
+        animation: rotateRays 20s linear infinite;
+    }
+
+    .sun-ray-1 { transform: translate(-50%, -50%) rotate(0deg); }
+    .sun-ray-2 { transform: translate(-50%, -50%) rotate(45deg); }
+    .sun-ray-3 { transform: translate(-50%, -50%) rotate(90deg); }
+    .sun-ray-4 { transform: translate(-50%, -50%) rotate(135deg); }
+    .sun-ray-5 { transform: translate(-50%, -50%) rotate(180deg); }
+    .sun-ray-6 { transform: translate(-50%, -50%) rotate(225deg); }
+    .sun-ray-7 { transform: translate(-50%, -50%) rotate(270deg); }
+    .sun-ray-8 { transform: translate(-50%, -50%) rotate(315deg); }
+
+    @keyframes rotateRays {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .subtle-ground {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(180deg, rgba(210, 180, 140, 0.6) 0%, rgba(190, 160, 120, 0.7) 100%);
+    }
+
+    .horse-rider {
+        position: absolute;
+        bottom: 35%;
+        left: -120px;
+        width: 120px;
+        height: 80px;
+        animation: horseRide 15s linear infinite;
+    }
+
+    @keyframes horseRide {
+        0% { left: -120px; }
+        100% { left: calc(100% + 120px); }
+    }
+
+    .horse-body {
+        position: absolute;
+        bottom: 30px;
+        left: 20px;
+        width: 60px;
+        height: 30px;
+        background: rgba(80, 60, 40, 0.85);
+        border-radius: 8px;
+        animation: horseBob 0.6s infinite ease-in-out;
+    }
+
+    @keyframes horseBob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    .horse-head {
+        position: absolute;
+        bottom: 35px;
+        left: 70px;
+        width: 25px;
+        height: 25px;
+        background: rgba(80, 60, 40, 0.85);
+        border-radius: 4px;
+        animation: horseBob 0.6s infinite ease-in-out;
+    }
+
+    .horse-leg {
+        position: absolute;
+        bottom: 5px;
+        width: 8px;
+        height: 25px;
+        background: rgba(70, 50, 35, 0.9);
+        animation: horseBob 0.6s infinite ease-in-out;
+    }
+
+    .horse-leg-1 { left: 25px; animation: legMove1 0.6s infinite ease-in-out; }
+    .horse-leg-2 { left: 40px; animation: legMove2 0.6s infinite ease-in-out; }
+    .horse-leg-3 { left: 50px; animation: legMove1 0.6s infinite ease-in-out 0.3s; }
+    .horse-leg-4 { left: 65px; animation: legMove2 0.6s infinite ease-in-out 0.3s; }
+
+    @keyframes legMove1 {
+        0%, 100% { height: 25px; bottom: 5px; }
+        50% { height: 20px; bottom: 5px; }
+    }
+
+    @keyframes legMove2 {
+        0%, 100% { height: 20px; bottom: 5px; }
+        50% { height: 25px; bottom: 5px; }
+    }
+
+    .rider-body {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        width: 20px;
+        height: 25px;
+        background: rgba(60, 40, 30, 0.9);
+        border-radius: 3px;
+        animation: horseBob 0.6s infinite ease-in-out;
+    }
+
+    .rider-head {
+        position: absolute;
+        bottom: 60px;
+        left: 45px;
+        width: 12px;
+        height: 12px;
+        background: rgba(60, 40, 30, 0.9);
+        border-radius: 50%;
+        animation: horseBob 0.6s infinite ease-in-out;
+    }
+
+    /* ========== CINEMATIC SCENE ========== */
+    .cinematic-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #2C3E50 0%, #34495E 50%, #1A252F 100%);
+    }
+
+    .cinematic-building {
+        position: absolute;
+        bottom: 0;
+        background: rgba(15, 25, 35, 0.9);
+        box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .cinematic-building-left {
+        left: 0;
+        width: 30%;
+        height: 50%;
+    }
+
+    .cinematic-building-right {
+        right: 0;
+        width: 30%;
+        height: 50%;
+    }
+
+    .muzzle-flash {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 200, 100, 1) 0%, rgba(255, 150, 50, 0.8) 30%, rgba(255, 100, 0, 0) 70%);
+        opacity: 0;
+        filter: blur(3px);
+    }
+
+    .muzzle-flash-1 {
+        left: 20%;
+        top: 45%;
+        animation: flash1 3s infinite;
+    }
+
+    .muzzle-flash-2 {
+        right: 20%;
+        top: 42%;
+        animation: flash2 3.5s infinite 1s;
+    }
+
+    .muzzle-flash-3 {
+        left: 18%;
+        top: 48%;
+        animation: flash3 4s infinite 2s;
+    }
+
+    @keyframes flash1 {
+        0%, 95% { opacity: 0; transform: scale(1); }
+        96% { opacity: 1; transform: scale(1.3); }
+        97% { opacity: 0.8; transform: scale(1.1); }
+        98%, 100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes flash2 {
+        0%, 95% { opacity: 0; transform: scale(1); }
+        96% { opacity: 1; transform: scale(1.4); }
+        97% { opacity: 0.7; transform: scale(1.2); }
+        98%, 100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes flash3 {
+        0%, 95% { opacity: 0; transform: scale(1); }
+        96% { opacity: 1; transform: scale(1.2); }
+        97% { opacity: 0.9; transform: scale(1); }
+        98%, 100% { opacity: 0; transform: scale(1); }
+    }
+
+    .bullet {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(255, 220, 100, 0.95);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(255, 200, 80, 0.8), 0 0 4px rgba(255, 150, 50, 0.6);
+        opacity: 0;
+    }
+
+    .bullet-1 {
+        top: 45%;
+        animation: bullet1 3s infinite;
+    }
+
+    .bullet-2 {
+        top: 42%;
+        animation: bullet2 3.5s infinite 1s;
+    }
+
+    .bullet-3 {
+        top: 48%;
+        animation: bullet3 4s infinite 2s;
+    }
+
+    @keyframes bullet1 {
+        0%, 4% { left: 20%; opacity: 0; }
+        5% { left: 22%; opacity: 1; }
+        50% { left: 70%; opacity: 1; }
+        51%, 100% { left: 72%; opacity: 0; }
+    }
+
+    @keyframes bullet2 {
+        0%, 4% { right: 20%; opacity: 0; }
+        5% { right: 22%; opacity: 1; }
+        50% { right: 70%; opacity: 1; }
+        51%, 100% { right: 72%; opacity: 0; }
+    }
+
+    @keyframes bullet3 {
+        0%, 4% { left: 18%; opacity: 0; }
+        5% { left: 20%; opacity: 1; }
+        50% { left: 75%; opacity: 1; }
+        51%, 100% { left: 77%; opacity: 0; }
+    }
+
+    /* ========== DRAMATIC SCENE ========== */
+    .dramatic-sky {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #FFB6D9 0%, #FFC9E5 40%, #FFD6ED 70%, #FFE4F5 100%);
+    }
+
+    .cloud {
+        position: absolute;
+        background: rgba(255, 200, 220, 0.8);
+        border-radius: 100px;
+        opacity: 0.9;
+        animation: float 20s infinite ease-in-out;
+    }
+
+    .cloud::before,
+    .cloud::after {
+        content: '';
+        position: absolute;
+        background: rgba(255, 200, 220, 0.8);
+        border-radius: 100px;
+    }
+
+    .cloud-1 {
+        top: 10%;
+        left: -10%;
+        width: 120px;
+        height: 40px;
+        animation: float 25s infinite ease-in-out;
+    }
+
+    .cloud-1::before {
+        top: -15px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .cloud-1::after {
+        top: -10px;
+        right: 20px;
+        width: 60px;
+        height: 40px;
+    }
+
+    .cloud-2 {
+        top: 15%;
+        left: 30%;
+        width: 100px;
+        height: 35px;
+        animation: float 30s infinite ease-in-out 5s;
+    }
+
+    .cloud-2::before {
+        top: -12px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .cloud-2::after {
+        top: -8px;
+        right: 15px;
+        width: 50px;
+        height: 35px;
+    }
+
+    .cloud-3 {
+        top: 8%;
+        right: 10%;
+        width: 110px;
+        height: 38px;
+        animation: float 28s infinite ease-in-out 10s;
+    }
+
+    .cloud-3::before {
+        top: -14px;
+        left: 18px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .cloud-3::after {
+        top: -9px;
+        right: 18px;
+        width: 55px;
+        height: 38px;
+    }
+
+    .cloud-4 {
+        top: 20%;
+        right: -5%;
+        width: 90px;
+        height: 32px;
+        animation: float 22s infinite ease-in-out 3s;
+    }
+
+    .cloud-4::before {
+        top: -11px;
+        left: 14px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .cloud-4::after {
+        top: -7px;
+        right: 14px;
+        width: 48px;
+        height: 32px;
+    }
+
+    @keyframes float {
+        0% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(120vw) translateY(-15px); }
+        50.01% { transform: translateX(-20vw) translateY(-15px); }
+        100% { transform: translateX(0) translateY(0); }
+    }
+
+    /* Pink Birds */
+    .bird {
+        position: absolute;
+        width: 30px;
+        height: 15px;
+    }
+
+    .bird-wing {
+        position: absolute;
+        width: 15px;
+        height: 8px;
+        background: rgba(255, 140, 190, 0.85);
+        border-radius: 50% 0 0 50%;
+        top: 0;
+    }
+
+    .bird-wing-left {
+        left: 0;
+        transform-origin: right center;
+        animation: flapLeft 0.5s infinite ease-in-out;
+    }
+
+    .bird-wing-right {
+        right: 0;
+        transform: scaleX(-1);
+        transform-origin: left center;
+        animation: flapRight 0.5s infinite ease-in-out;
+    }
+
+    @keyframes flapLeft {
+        0%, 100% { transform: rotateZ(-20deg); }
+        50% { transform: rotateZ(-60deg); }
+    }
+
+    @keyframes flapRight {
+        0%, 100% { transform: scaleX(-1) rotateZ(-20deg); }
+        50% { transform: scaleX(-1) rotateZ(-60deg); }
+    }
+
+    .bird-1 {
+        top: 8%;
+        animation: birdFly1 18s linear infinite;
+    }
+
+    .bird-2 {
+        top: 15%;
+        animation: birdFly2 22s linear infinite;
+        animation-delay: -5s;
+    }
+
+    .bird-3 {
+        top: 12%;
+        animation: birdFly3 20s linear infinite;
+        animation-delay: -10s;
+    }
+
+    .bird-4 {
+        top: 20%;
+        animation: birdFly1 25s linear infinite;
+        animation-delay: -15s;
+    }
+
+    .bird-5 {
+        top: 10%;
+        animation: birdFly2 19s linear infinite;
+        animation-delay: -8s;
+    }
+
+    @keyframes birdFly1 {
+        0% {
+            left: -50px;
+            transform: translateY(0) scale(1);
+        }
+        25% {
+            transform: translateY(-20px) scale(1.1);
+        }
+        50% {
+            transform: translateY(0) scale(1);
+        }
+        75% {
+            transform: translateY(15px) scale(0.95);
+        }
+        100% {
+            left: calc(100% + 50px);
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes birdFly2 {
+        0% {
+            left: -50px;
+            transform: translateY(0) scale(0.9);
+        }
+        30% {
+            transform: translateY(20px) scale(1);
+        }
+        60% {
+            transform: translateY(-10px) scale(1.05);
+        }
+        100% {
+            left: calc(100% + 50px);
+            transform: translateY(0) scale(0.9);
+        }
+    }
+
+    @keyframes birdFly3 {
+        0% {
+            left: -50px;
+            transform: translateY(0) scale(1.1);
+        }
+        35% {
+            transform: translateY(-15px) scale(1);
+        }
+        70% {
+            transform: translateY(10px) scale(0.95);
+        }
+        100% {
+            left: calc(100% + 50px);
+            transform: translateY(0) scale(1.1);
+        }
+    }
+
+    .dramatic-ocean {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 45%;
+        background: linear-gradient(180deg, #FF9FCC 0%, #FF88BB 50%, #FF6FA8 100%);
+    }
+
+    .wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(255, 120, 180, 0.2);
+        border-radius: 50% 50% 0 0;
+    }
+
+    .wave-1 {
+        height: 40px;
+        animation: wave1 8s infinite ease-in-out;
+    }
+
+    .wave-2 {
+        height: 50px;
+        animation: wave2 10s infinite ease-in-out 2s;
+        opacity: 0.8;
+    }
+
+    .wave-3 {
+        height: 60px;
+        animation: wave3 12s infinite ease-in-out 4s;
+        opacity: 0.6;
+    }
+
+    @keyframes wave1 {
+        0%, 100% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(-20px) scaleY(1.1); }
+    }
+
+    @keyframes wave2 {
+        0%, 100% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(30px) scaleY(1.15); }
+    }
+
+    @keyframes wave3 {
+        0%, 100% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(-15px) scaleY(1.08); }
+    }
+
+    .boat {
+        position: absolute;
+        bottom: 25%;
+        right: 35%;
+        width: 80px;
+        height: 100px;
+        animation: bobbing 4s infinite ease-in-out;
+    }
+
+    @keyframes bobbing {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(2deg); }
+    }
+
+    .boat-hull {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 40px solid transparent;
+        border-right: 40px solid transparent;
+        border-bottom: 25px solid rgba(139, 69, 19, 0.9);
+    }
+
+    .boat-mast {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 60px;
+        background: rgba(101, 67, 33, 0.9);
+    }
+
+    .boat-sail {
+        position: absolute;
+        bottom: 25px;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-top: 50px solid rgba(255, 235, 245, 0.9);
+        border-left: 35px solid transparent;
     }
 
     /* Hide dunes when showing custom scenes */

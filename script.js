@@ -2096,8 +2096,43 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Initializing scenes after delay');
         console.log('currentVisualPreset:', currentVisualPreset);
         console.log('Dark mode:', document.body.classList.contains('dark-mode'));
+        
+        // Test if canvases exist
+        const cinematicCanvas = document.getElementById('cinematic-canvas');
+        const dramaticCanvas = document.getElementById('dramatic-canvas');
+        const subtleCanvas = document.getElementById('subtle-canvas');
+        
+        console.log('Canvases found:', {
+            cinematic: !!cinematicCanvas,
+            dramatic: !!dramaticCanvas,
+            subtle: !!subtleCanvas
+        });
+        
         if (!document.body.classList.contains('dark-mode')) {
             updateSceneAnimations(currentVisualPreset);
         }
     }, 800);
 });
+
+// Add manual test function
+window.testScenes = function() {
+    console.log('=== MANUAL TEST ===');
+    console.log('Testing cinematic scene...');
+    const cinematicResult = initCinematicScene();
+    console.log('Cinematic result:', cinematicResult);
+    
+    setTimeout(() => {
+        console.log('Testing dramatic scene...');
+        if (cinematicResult && typeof cinematicResult === 'function') {
+            cinematicResult(); // stop cinematic
+        }
+        const dramaticResult = initDramaticScene();
+        console.log('Dramatic result:', dramaticResult);
+    }, 3000);
+};
+
+console.log('Type testScenes() in console to manually test animations');
+
+// NOTE: Canvas-based animations have been replaced with pure CSS animations
+// All scene animations (cinematic gun fight, dramatic pink ocean) are now in CSS
+// No JavaScript initialization needed - they show/hide based on body.preset-* classes
