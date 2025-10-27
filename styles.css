@@ -150,6 +150,60 @@ body{
     body.dark-mode .bg-canvas{ opacity:1; transform:scale(1) }
     .bg-canvas{ background: radial-gradient(ellipse at center, rgba(20,10,50,0.6) 0%, rgba(6,8,25,0.85) 60%, #00030a 100%) }
 
+    /* 3D Scene backgrounds for presets (light theme only) */
+    .bg-scene {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.8s ease, visibility 0.8s ease;
+        pointer-events: none;
+        z-index: 1;
+        display: none;
+    }
+
+    /* Ensure scenes are block in light mode */
+    body:not(.dark-mode) .bg-scene {
+        display: block;
+    }
+
+    .scene-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    /* Show scenes based on preset class on body */
+    body:not(.dark-mode).preset-subtle #scene-subtle {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+    }
+
+    body:not(.dark-mode).preset-cinematic #scene-cinematic {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+    }
+
+    body:not(.dark-mode).preset-dramatic #scene-dramatic {
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1 !important;
+    }
+
+    /* Hide dunes when showing custom scenes */
+    body:not(.dark-mode).preset-subtle #dunes,
+    body:not(.dark-mode).preset-cinematic #dunes,
+    body:not(.dark-mode).preset-dramatic #dunes {
+        opacity: 0;
+        visibility: hidden;
+    }
+
     /* Dark theme tweaks for app - ensure headings and body text are readable on dark backgrounds */
     body.dark-mode h1,
     body.dark-mode h2,

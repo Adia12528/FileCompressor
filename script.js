@@ -664,6 +664,25 @@ function toggleTheme() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     // start/stop universe background to match theme
     try { startUniverseIfNeeded(); } catch (e) { /* no-op */ }
+    // Update 3D scene animations based on theme
+    try { 
+        if (typeof updateSceneAnimations === 'function') {
+            if (isDark) {
+                // Stop all scene animations in dark mode
+                if (typeof sceneAnimations !== 'undefined') {
+                    Object.keys(sceneAnimations).forEach(key => {
+                        if (sceneAnimations[key]) {
+                            sceneAnimations[key]();
+                            sceneAnimations[key] = null;
+                        }
+                    });
+                }
+            } else {
+                // Start scene animation for current preset in light mode
+                updateSceneAnimations(currentVisualPreset);
+            }
+        }
+    } catch (e) { console.log('Scene animation error:', e); }
 }
 
 // --- Universe background (dark theme) ---
@@ -808,6 +827,8 @@ function setVisualPreset(name) {
     try { updateDunesForPreset(name); } catch (e) {}
     // if universe is active, re-seed particles for immediate feedback
     try { if (universe.active) createParticles(); } catch (e) { /* no-op */ }
+    // Update 3D scene animations
+    try { if (typeof updateSceneAnimations === 'function') updateSceneAnimations(name); } catch (e) { console.log('Scene animation error:', e); }
 }
 
 function updateDunesForPreset(name) {
@@ -1552,4 +1573,531 @@ window.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', updateMobileMenuPlacement);
         updateMobileMenuPlacement();
     } catch (e) { /* no-op */ }
+});
+
+// ============================================================================
+// 3D SCENE ANIMATIONS FOR VISUAL PRESETS (LIGHT THEME)
+// ============================================================================
+
+const sceneAnimations = {
+    subtle: null,
+    cinematic: null,
+    dramatic: null
+};
+
+// Subtle: Horse riding with light rays
+function initSubtleScene() {
+    const canvas = document.getElementById('subtle-canvas');
+    if (!canvas) {
+        console.log('Subtle canvas not found');
+        return;
+    }
+    
+    console.log('Initializing subtle scene');
+    const ctx = canvas.getContext('2d');
+    let animationFrame;
+    
+    function resize() {
+        canvas.width = canvas.clientWidth || window.innerWidth;
+        canvas.height = canvas.clientHeight || window.innerHeight;
+        console.log('Subtle canvas resized:', canvas.width, 'x', canvas.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    
+    // Horse riding animation
+    const horse = {
+        x: -100,
+        speed: 1.5,
+        bobOffset: 0
+    };
+    
+    const sunRays = [];
+    for (let i = 0; i < 12; i++) {
+        sunRays.push({
+            angle: (i / 12) * Math.PI * 2,
+            length: Math.random() * 50 + 100,
+            opacity: Math.random() * 0.3 + 0.1
+        });
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Sky gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#FFE5B4');
+        gradient.addColorStop(0.5, '#FFF4E0');
+        gradient.addColorStop(1, '#FFEAA7');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Sun with rays
+        const sunX = canvas.width * 0.75;
+        const sunY = canvas.height * 0.25;
+        const sunRadius = 60;
+        
+        // Draw rays
+        ctx.save();
+        ctx.translate(sunX, sunY);
+        sunRays.forEach(ray => {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            const endX = Math.cos(ray.angle) * ray.length;
+            const endY = Math.sin(ray.angle) * ray.length;
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = `rgba(255, 230, 100, ${ray.opacity})`;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ray.angle += 0.002;
+        });
+        ctx.restore();
+        
+        // Sun glow
+        const sunGradient = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius);
+        sunGradient.addColorStop(0, 'rgba(255, 240, 150, 0.9)');
+        sunGradient.addColorStop(0.5, 'rgba(255, 220, 100, 0.6)');
+        sunGradient.addColorStop(1, 'rgba(255, 200, 80, 0)');
+        ctx.fillStyle = sunGradient;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Ground
+        ctx.fillStyle = 'rgba(210, 180, 140, 0.5)';
+        ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+        
+        // Simple horse silhouette
+        horse.x += horse.speed;
+        if (horse.x > canvas.width + 100) horse.x = -100;
+        
+        horse.bobOffset += 0.1;
+        const bobY = Math.sin(horse.bobOffset) * 5;
+        
+        const horseY = canvas.height * 0.65 + bobY;
+        
+        ctx.fillStyle = 'rgba(80, 60, 40, 0.8)';
+        // Body
+        ctx.fillRect(horse.x, horseY, 60, 30);
+        // Head
+        ctx.fillRect(horse.x + 50, horseY - 20, 25, 25);
+        // Legs
+        ctx.fillRect(horse.x + 5, horseY + 30, 8, 25);
+        ctx.fillRect(horse.x + 25, horseY + 30, 8, 25);
+        ctx.fillRect(horse.x + 35, horseY + 30, 8, 25);
+        ctx.fillRect(horse.x + 50, horseY + 30, 8, 25);
+        
+        // Rider
+        ctx.fillStyle = 'rgba(60, 40, 30, 0.9)';
+        ctx.fillRect(horse.x + 20, horseY - 20, 20, 25);
+        // Rider head
+        ctx.beginPath();
+        ctx.arc(horse.x + 30, horseY - 25, 8, 0, Math.PI * 2);
+        ctx.fill();
+        
+        animationFrame = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    return () => {
+        cancelAnimationFrame(animationFrame);
+        window.removeEventListener('resize', resize);
+    };
+}
+
+// Cinematic: Gun fight cinema scene
+function initCinematicScene() {
+    const canvas = document.getElementById('cinematic-canvas');
+    if (!canvas) {
+        console.error('Cinematic canvas not found!');
+        return null;
+    }
+    
+    console.log('Initializing cinematic scene', canvas);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get 2d context for cinematic canvas');
+        return null;
+    }
+    
+    let animationFrame;
+    
+    function resize() {
+        const width = Math.max(canvas.clientWidth, window.innerWidth, 800);
+        const height = Math.max(canvas.clientHeight, window.innerHeight, 600);
+        canvas.width = width;
+        canvas.height = height;
+        console.log('Cinematic canvas resized:', canvas.width, 'x', canvas.height);
+    }
+    
+    // Force resize immediately
+    setTimeout(() => resize(), 50);
+    resize();
+    
+    window.addEventListener('resize', resize);
+    
+    // Muzzle flashes
+    const flashes = [];
+    
+    function createFlash() {
+        const side = Math.random() > 0.5 ? 'left' : 'right';
+        flashes.push({
+            x: side === 'left' ? canvas.width * 0.2 : canvas.width * 0.8,
+            y: canvas.height * (0.4 + Math.random() * 0.2),
+            size: Math.random() * 30 + 20,
+            life: 1,
+            side: side
+        });
+    }
+    
+    let flashTimer = 0;
+    
+    // Bullets
+    const bullets = [];
+    
+    function createBullet(x, y, direction) {
+        bullets.push({
+            x: x,
+            y: y,
+            vx: direction * (8 + Math.random() * 4),
+            vy: (Math.random() - 0.5) * 2,
+            life: 1
+        });
+    }
+    
+    // Buildings/cover silhouettes
+    const buildings = [
+        { x: 0, y: canvas.height * 0.5, w: canvas.width * 0.3, h: canvas.height * 0.5 },
+        { x: canvas.width * 0.7, y: canvas.height * 0.5, w: canvas.width * 0.3, h: canvas.height * 0.5 }
+    ];
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Dark cinematic background
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#2C3E50');
+        gradient.addColorStop(0.5, '#34495E');
+        gradient.addColorStop(1, '#1A252F');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Spotlight effects
+        const spotlight1 = ctx.createRadialGradient(canvas.width * 0.3, 0, 0, canvas.width * 0.3, canvas.height * 0.4, canvas.height * 0.6);
+        spotlight1.addColorStop(0, 'rgba(255, 230, 150, 0.15)');
+        spotlight1.addColorStop(1, 'rgba(255, 230, 150, 0)');
+        ctx.fillStyle = spotlight1;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Buildings/cover
+        ctx.fillStyle = 'rgba(20, 30, 40, 0.8)';
+        buildings.forEach(b => {
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+        });
+        
+        // Create random flashes
+        flashTimer++;
+        if (flashTimer > 20 + Math.random() * 30) {
+            createFlash();
+            flashTimer = 0;
+        }
+        
+        // Draw and update muzzle flashes
+        flashes.forEach((flash, index) => {
+            ctx.save();
+            ctx.globalAlpha = flash.life;
+            
+            // Flash glow
+            const flashGradient = ctx.createRadialGradient(flash.x, flash.y, 0, flash.x, flash.y, flash.size);
+            flashGradient.addColorStop(0, 'rgba(255, 200, 100, 1)');
+            flashGradient.addColorStop(0.3, 'rgba(255, 150, 50, 0.8)');
+            flashGradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
+            ctx.fillStyle = flashGradient;
+            ctx.beginPath();
+            ctx.arc(flash.x, flash.y, flash.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+            
+            flash.life -= 0.1;
+            
+            // Create bullet
+            if (flash.life > 0.8 && Math.random() > 0.7) {
+                createBullet(flash.x, flash.y, flash.side === 'left' ? 1 : -1);
+            }
+            
+            if (flash.life <= 0) {
+                flashes.splice(index, 1);
+            }
+        });
+        
+        // Draw and update bullets
+        ctx.fillStyle = 'rgba(255, 220, 100, 0.9)';
+        bullets.forEach((bullet, index) => {
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Bullet trail
+            ctx.strokeStyle = 'rgba(255, 200, 80, 0.5)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(bullet.x, bullet.y);
+            ctx.lineTo(bullet.x - bullet.vx * 2, bullet.y - bullet.vy * 2);
+            ctx.stroke();
+            
+            bullet.x += bullet.vx;
+            bullet.y += bullet.vy;
+            bullet.life -= 0.02;
+            
+            if (bullet.x < 0 || bullet.x > canvas.width || bullet.life <= 0) {
+                bullets.splice(index, 1);
+            }
+        });
+        
+        animationFrame = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    return () => {
+        cancelAnimationFrame(animationFrame);
+        window.removeEventListener('resize', resize);
+    };
+}
+
+// Dramatic: Pink sky with clouds, ocean and boat
+function initDramaticScene() {
+    const canvas = document.getElementById('dramatic-canvas');
+    if (!canvas) {
+        console.error('Dramatic canvas not found!');
+        return null;
+    }
+    
+    console.log('Initializing dramatic scene', canvas);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get 2d context for dramatic canvas');
+        return null;
+    }
+    
+    let animationFrame;
+    
+    function resize() {
+        const width = Math.max(canvas.clientWidth, window.innerWidth, 800);
+        const height = Math.max(canvas.clientHeight, window.innerHeight, 600);
+        canvas.width = width;
+        canvas.height = height;
+        console.log('Dramatic canvas resized:', canvas.width, 'x', canvas.height);
+    }
+    
+    // Force resize immediately
+    setTimeout(() => resize(), 50);
+    resize();
+    
+    window.addEventListener('resize', resize);
+    
+    // Clouds
+    const clouds = [];
+    for (let i = 0; i < 8; i++) {
+        clouds.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height * 0.4,
+            width: Math.random() * 120 + 80,
+            height: Math.random() * 40 + 30,
+            speed: Math.random() * 0.3 + 0.2,
+            opacity: Math.random() * 0.4 + 0.3
+        });
+    }
+    
+    // Waves
+    const waves = [];
+    for (let i = 0; i < 4; i++) {
+        waves.push({
+            offset: Math.random() * Math.PI * 2,
+            speed: 0.02 + i * 0.01,
+            amplitude: 10 + i * 5,
+            y: canvas.height * 0.55 + i * 15
+        });
+    }
+    
+    // Boat
+    const boat = {
+        x: canvas.width * 0.6,
+        y: canvas.height * 0.6,
+        bobOffset: 0
+    };
+    
+    function drawCloud(x, y, width, height, opacity) {
+        ctx.globalAlpha = opacity;
+        ctx.fillStyle = 'rgba(255, 200, 220, 0.9)';
+        
+        // Multiple circles for fluffy cloud
+        ctx.beginPath();
+        ctx.arc(x, y, height * 0.6, 0, Math.PI * 2);
+        ctx.arc(x + width * 0.3, y - height * 0.2, height * 0.5, 0, Math.PI * 2);
+        ctx.arc(x + width * 0.6, y, height * 0.55, 0, Math.PI * 2);
+        ctx.arc(x + width * 0.3, y + height * 0.1, height * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.globalAlpha = 1;
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Pink gradient sky
+        const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.6);
+        skyGradient.addColorStop(0, '#FFB6D9');
+        skyGradient.addColorStop(0.4, '#FFC9E5');
+        skyGradient.addColorStop(0.7, '#FFD6ED');
+        skyGradient.addColorStop(1, '#FFE4F5');
+        ctx.fillStyle = skyGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height * 0.6);
+        
+        // Clouds
+        clouds.forEach(cloud => {
+            drawCloud(cloud.x, cloud.y, cloud.width, cloud.height, cloud.opacity);
+            cloud.x += cloud.speed;
+            if (cloud.x > canvas.width + cloud.width) {
+                cloud.x = -cloud.width;
+            }
+        });
+        
+        // Pink ocean
+        const oceanGradient = ctx.createLinearGradient(0, canvas.height * 0.55, 0, canvas.height);
+        oceanGradient.addColorStop(0, '#FF9FCC');
+        oceanGradient.addColorStop(0.5, '#FF88BB');
+        oceanGradient.addColorStop(1, '#FF6FA8');
+        ctx.fillStyle = oceanGradient;
+        ctx.fillRect(0, canvas.height * 0.55, canvas.width, canvas.height * 0.45);
+        
+        // Waves
+        waves.forEach(wave => {
+            ctx.beginPath();
+            ctx.moveTo(0, wave.y);
+            
+            for (let x = 0; x <= canvas.width; x += 10) {
+                const y = wave.y + Math.sin((x * 0.02) + wave.offset) * wave.amplitude;
+                ctx.lineTo(x, y);
+            }
+            
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            
+            ctx.fillStyle = `rgba(255, 120, 180, ${0.15 - wave.speed * 2})`;
+            ctx.fill();
+            
+            wave.offset += wave.speed;
+        });
+        
+        // Boat bobbing
+        boat.bobOffset += 0.03;
+        const bobY = Math.sin(boat.bobOffset) * 8;
+        const boatY = boat.y + bobY;
+        
+        // Boat hull
+        ctx.fillStyle = 'rgba(139, 69, 19, 0.9)';
+        ctx.beginPath();
+        ctx.moveTo(boat.x - 40, boatY);
+        ctx.lineTo(boat.x + 40, boatY);
+        ctx.lineTo(boat.x + 30, boatY + 20);
+        ctx.lineTo(boat.x - 30, boatY + 20);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Sail mast
+        ctx.strokeStyle = 'rgba(101, 67, 33, 0.9)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(boat.x, boatY);
+        ctx.lineTo(boat.x, boatY - 60);
+        ctx.stroke();
+        
+        // Sail
+        ctx.fillStyle = 'rgba(255, 235, 245, 0.85)';
+        ctx.beginPath();
+        ctx.moveTo(boat.x, boatY - 55);
+        ctx.lineTo(boat.x + 35, boatY - 30);
+        ctx.lineTo(boat.x, boatY - 5);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Sail shadow
+        ctx.strokeStyle = 'rgba(255, 200, 220, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        animationFrame = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    return () => {
+        cancelAnimationFrame(animationFrame);
+        window.removeEventListener('resize', resize);
+    };
+}
+
+// Initialize scenes on load and preset change
+function updateSceneAnimations(preset) {
+    console.log('=== updateSceneAnimations called ===');
+    console.log('Preset:', preset);
+    console.log('Dark mode:', document.body.classList.contains('dark-mode'));
+    console.log('Body classes:', document.body.className);
+    
+    // Stop all existing animations
+    Object.keys(sceneAnimations).forEach(key => {
+        if (sceneAnimations[key] && typeof sceneAnimations[key] === 'function') {
+            console.log('Stopping animation:', key);
+            try {
+                sceneAnimations[key]();
+            } catch(e) {
+                console.error('Error stopping', key, e);
+            }
+            sceneAnimations[key] = null;
+        }
+    });
+    
+    // Start animation for current preset (only in light mode)
+    if (document.body.classList.contains('dark-mode')) {
+        console.log('Skipping scene init - dark mode active');
+        return;
+    }
+    
+    setTimeout(() => {
+        console.log('Starting animation for preset:', preset);
+        try {
+            if (preset === 'subtle') {
+                const result = initSubtleScene();
+                sceneAnimations.subtle = result;
+                console.log('Subtle scene initialized:', result !== null);
+            } else if (preset === 'cinematic') {
+                const result = initCinematicScene();
+                sceneAnimations.cinematic = result;
+                console.log('Cinematic scene initialized:', result !== null);
+            } else if (preset === 'dramatic') {
+                const result = initDramaticScene();
+                sceneAnimations.dramatic = result;
+                console.log('Dramatic scene initialized:', result !== null);
+            }
+        } catch(e) {
+            console.error('Error initializing scene:', e);
+        }
+    }, 150);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+    setTimeout(() => {
+        console.log('Initializing scenes after delay');
+        console.log('currentVisualPreset:', currentVisualPreset);
+        console.log('Dark mode:', document.body.classList.contains('dark-mode'));
+        if (!document.body.classList.contains('dark-mode')) {
+            updateSceneAnimations(currentVisualPreset);
+        }
+    }, 800);
 });
