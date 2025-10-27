@@ -860,22 +860,33 @@ function initUniverse() {
         const countBase = Math.max(preset.countMin || 40, Math.floor(w / preset.densityDiv));
         const count = Math.min(preset.maxCount, countBase);
         universe.particles = [];
-    const smallScreen = window.innerWidth < 640;
-    // further reduce particles for very small devices to preserve performance
-    let finalCount = smallScreen ? Math.floor(count * (preset.smallScreenFactor || 0.6)) : count;
-    if (window.innerWidth < 420) finalCount = Math.max(12, Math.floor(finalCount * 0.55));
+        const smallScreen = window.innerWidth < 640;
+        // further reduce particles for very small devices to preserve performance
+        let finalCount = smallScreen ? Math.floor(count * (preset.smallScreenFactor || 0.6)) : count;
+        if (window.innerWidth < 420) finalCount = Math.max(12, Math.floor(finalCount * 0.55));
+        // For large modern phones with high DPR, slightly increase particle density for visual richness
+        const isLargePhone = window.innerWidth >= 390 && window.innerWidth <= 820;
+        const highDPR = (window.devicePixelRatio || 1) >= 2;
+        if (isLargePhone && highDPR) {
+            // modest boost but cap to avoid performance impact
+            finalCount = Math.min(preset.maxCount, Math.floor(finalCount * 1.35));
+        }
         for (let i = 0; i < finalCount; i++) {
             const isSpark = Math.random() < preset.sparkFreq;
             const z = preset.zMin + Math.random() * preset.zRange;
 
             let r = Math.random() * (isSpark ? (preset.rSparkMax - preset.rSparkMin) : (preset.rStarMax - preset.rStarMin)) + (isSpark ? preset.rSparkMin : preset.rStarMin);
-            // scale down radii on very small screens
-            if (window.innerWidth < 420) r = Math.max(0.6, r * 0.75);
+            // scale down radii on very small screens, slightly increase on large high-DPR phones
+            if (window.innerWidth < 420) {
+                r = Math.max(0.6, r * 0.75);
+            } else if (isLargePhone && highDPR) {
+                r = r * 1.15;
+            }
 
             const vx = (Math.random() - 0.5) * (isSpark ? preset.vxSpark : preset.vxStar);
             const vy = (Math.random() - 0.5) * (isSpark ? preset.vySpark : preset.vyStar);
             // reduce velocity slightly on tiny screens to avoid large travel across small canvases
-            const velocityScale = window.innerWidth < 420 ? 0.7 : 1;
+            const velocityScale = window.innerWidth < 420 ? 0.7 : (isLargePhone ? 0.95 : 1);
 
             let hue;
             if (isSpark) {
@@ -1186,6 +1197,50 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     } catch (e) { /* no-op */ }
 
+    // Preset row scroll buttons (left/right) for small screens
+    try {
+        const scrollLeftBtn = document.querySelector('.preset-scroll-left');
+        const scrollRightBtn = document.querySelector('.preset-scroll-right');
+        const presetControl = document.querySelector('.top-controls > .preset-control');
+        const presetSegment = document.querySelector('.preset-segment');
+        if (scrollLeftBtn && scrollRightBtn && presetControl && presetSegment) {
+            const scrollAmount = Math.floor(presetControl.clientWidth * 0.6);
+            scrollLeftBtn.addEventListener('click', () => {
+                presetControl.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+            scrollRightBtn.addEventListener('click', () => {
+                presetControl.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+            // keyboard support
+            [scrollLeftBtn, scrollRightBtn].forEach(b => b.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); b.click(); }
+            }));
+            // show/hide gradients depending on scroll position
+            function updateGradientHints() {
+                const maxScroll = presetControl.scrollWidth - presetControl.clientWidth;
+                const scrolledLeft = presetControl.scrollLeft > 8;
+                const scrolledRight = presetControl.scrollLeft < (maxScroll - 8);
+                // toggle classes used for gradient hints
+                if (scrolledLeft) presetControl.classList.add('scrolled-left'); else presetControl.classList.remove('scrolled-left');
+                if (scrolledRight) presetControl.classList.add('scrolled-right'); else presetControl.classList.remove('scrolled-right');
+                // show/hide scroll buttons only when there's overflow in that direction
+                if (scrollLeftBtn) {
+                    scrollLeftBtn.style.display = scrolledLeft ? 'inline-flex' : 'none';
+                    scrollLeftBtn.setAttribute('aria-hidden', scrolledLeft ? 'false' : 'true');
+                }
+                if (scrollRightBtn) {
+                    scrollRightBtn.style.display = scrolledRight ? 'inline-flex' : 'none';
+                    scrollRightBtn.setAttribute('aria-hidden', scrolledRight ? 'false' : 'true');
+                }
+            }
+            presetControl.addEventListener('scroll', updateGradientHints);
+            // recompute on resize as scrollWidth/clientWidth can change
+            window.addEventListener('resize', updateGradientHints);
+            // initial update (also ensure buttons are hidden if no overflow)
+            updateGradientHints();
+        }
+    } catch (e) { /* no-op */ }
+
     // Language flyout interactions with delayed open/close
     const selector = document.querySelector('.lang-selector');
     const btn = document.getElementById('lang-button');
@@ -1223,4 +1278,278 @@ window.addEventListener('DOMContentLoaded', () => {
     try { showPresetHelp(currentVisualPreset); } catch (e) {}
     // apply dunes and body class for initial preset so light theme reflects it
     try { document.body.classList.add('preset-' + currentVisualPreset); updateDunesForPreset(currentVisualPreset); } catch (e) {}
+
+    // Mobile menu behavior: move controls into the three-dot menu on small screens
+    try {
+    const MOBILE_BREAK = 900;
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileFlyout = document.getElementById('mobile-menu-flyout');
+        const mobileInner = mobileFlyout ? mobileFlyout.querySelector('.mobile-menu-inner') : null;
+    const topControls = document.querySelector('.top-controls');
+    const presetControl = document.querySelector('.preset-control');
+    const effectsControl = document.querySelector('.effects-control');
+    const langSelector = document.querySelector('.lang-selector');
+    const themeToggle = document.querySelector('.theme-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const appCard = document.getElementById('app');
+
+        // store original positions so we can restore
+        const orig = new Map();
+        [topControls, presetControl, effectsControl, langSelector, themeToggle, mobileMenu].forEach(el => {
+            if (!el) return;
+            orig.set(el, { parent: el.parentNode, next: el.nextSibling });
+        });
+
+        function moveIntoMenu() {
+            if (!mobileInner) return;
+            // Move presets and effects into the flyout menu
+            if (presetControl && mobileInner.contains(presetControl) === false) {
+                mobileInner.appendChild(presetControl);
+            }
+            if (effectsControl && mobileInner.contains(effectsControl) === false) {
+                mobileInner.appendChild(effectsControl);
+            }
+            // NOTE: langSelector stays in top-controls — language remains visible next to theme
+            // Move the full top-controls into the app so it appears as fixed navbar at top
+            try {
+                if (topControls && appCard && appCard.contains(topControls) === false) {
+                    appCard.insertBefore(topControls, appCard.firstChild);
+                    topControls.classList.add('moved-to-app');
+                }
+            } catch (err) {}
+            if (mobileBtn) mobileBtn.style.display = 'inline-flex';
+            if (mobileFlyout) mobileFlyout.setAttribute('aria-hidden', 'true');
+            // make sure the button is on top and responsive on touch devices
+            try {
+                if (mobileBtn) {
+                    mobileBtn.style.zIndex = '2225';
+                    // attach a touchstart fallback for devices that sometimes don't dispatch click
+                    if (!mobileBtn._touchAttached) {
+                        mobileBtn.addEventListener('touchstart', function touchStartHandler(ev) {
+                            ev.preventDefault();
+                            ev.stopPropagation();
+                            // toggle similar to click
+                            const isOpen = mobileFlyout.getAttribute('aria-hidden') === 'false';
+                            if (isOpen) {
+                                mobileFlyout.setAttribute('aria-hidden', 'true');
+                                mobileBtn.setAttribute('aria-expanded', 'false');
+                            } else {
+                                positionMobileFlyout();
+                                mobileFlyout.setAttribute('aria-hidden', 'false');
+                                mobileBtn.setAttribute('aria-expanded', 'true');
+                                try { const focusable = mobileFlyout.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'); if (focusable) focusable.focus(); } catch(e){}
+                            }
+                        }, { passive: false });
+                        mobileBtn._touchAttached = true;
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function restoreFromMenu() {
+            // Restore presets and effects to their original locations
+            if (presetControl && orig.has(presetControl)) {
+                const { parent, next } = orig.get(presetControl);
+                if (next && next.parentNode === parent) parent.insertBefore(presetControl, next);
+                else parent.appendChild(presetControl);
+            }
+            if (effectsControl && orig.has(effectsControl)) {
+                const { parent, next } = orig.get(effectsControl);
+                if (next && next.parentNode === parent) parent.insertBefore(effectsControl, next);
+                else parent.appendChild(effectsControl);
+            }
+            if (langSelector && orig.has(langSelector)) {
+                const { parent, next } = orig.get(langSelector);
+                if (next && next.parentNode === parent) parent.insertBefore(langSelector, next);
+                else parent.appendChild(langSelector);
+            }
+            if (mobileBtn) mobileBtn.style.display = 'none';
+            if (mobileFlyout) mobileFlyout.setAttribute('aria-hidden', 'true');
+            // Restore top-controls to original location (removes fixed navbar)
+            try {
+                if (topControls && orig.has(topControls)) {
+                    const { parent, next } = orig.get(topControls);
+                    if (next && next.parentNode === parent) parent.insertBefore(topControls, next);
+                    else parent.appendChild(topControls);
+                    topControls.classList.remove('moved-to-app');
+                }
+            } catch (err) {}
+        }
+
+        function updateMobileMenuPlacement() {
+            if (window.innerWidth <= MOBILE_BREAK) moveIntoMenu(); else restoreFromMenu();
+        }
+
+        // wire toggle
+        if (mobileBtn && mobileFlyout) {
+            // Helper: try to position the flyout so it stays within the viewport
+            function positionMobileFlyout() {
+                try {
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+                    const btnRect = mobileBtn.getBoundingClientRect();
+                    const margin = 12;
+
+                    // Prefer a fixed layout on small screens (css already switches to fixed)
+                    mobileFlyout.style.position = 'fixed';
+
+                        // For narrow screens, prefer the CSS-driven centered layout to avoid off-screen widths
+                        const MOBILE_BREAK = 900;
+                        if (vw <= MOBILE_BREAK) {
+                            // Clear JS-driven width/left so CSS clamp + centering takes over
+                            mobileFlyout.style.width = '';
+                            mobileFlyout.style.left = '';
+                            mobileFlyout.style.right = '';
+                            mobileFlyout.style.transform = 'translateX(-50%) translateY(0)';
+                            // Let CSS set top; if needed we'll nudge it slightly below the button
+                            const below = Math.round(btnRect.bottom + 8);
+                            mobileFlyout.style.top = Math.max(12, below) + 'px';
+                        } else {
+                            // Calculate a comfortable width that won't be too thin or overflow
+                            const maxAllowed = Math.min(420, vw - margin * 2);
+                            const width = Math.max(260, Math.min(maxAllowed, Math.round(vw * 0.9)));
+                            mobileFlyout.style.width = width + 'px';
+
+                            // Center the flyout under the button when possible
+                            let left = Math.round(btnRect.left + btnRect.width / 2 - width / 2);
+                            left = Math.max(margin, Math.min(left, vw - margin - width));
+                            mobileFlyout.style.left = left + 'px';
+
+                            // Place below the button if there's room, otherwise above
+                            const below = Math.round(btnRect.bottom + 8);
+                            const spaceBelow = vh - below;
+                            // Estimate desired height (use CSS max-height otherwise) — clamp so we don't force off-screen
+                            const estDesired = Math.min( Math.round(vh * 0.6), 420 );
+                            if (spaceBelow < Math.min(160, estDesired * 0.4)) {
+                                // place above
+                                let topAbove = Math.round(btnRect.top - 8 - estDesired);
+                                topAbove = Math.max(margin, Math.min(topAbove, vh - margin - estDesired));
+                                mobileFlyout.style.top = Math.max(margin, btnRect.top - estDesired - 8) + 'px';
+                            } else {
+                                mobileFlyout.style.top = Math.max(margin, below) + 'px';
+                            }
+                        }
+                    // Estimate desired height (use CSS max-height otherwise) — clamp so we don't force off-screen
+                    const estDesired = Math.min( Math.round(vh * 0.6), 420 );
+                    if (spaceBelow < Math.min(160, estDesired * 0.4)) {
+                        // place above
+                        let topAbove = Math.round(btnRect.top - 8 - estDesired);
+                        topAbove = Math.max(margin, Math.min(topAbove, vh - margin - estDesired));
+                        mobileFlyout.style.top = Math.max(margin, btnRect.top - estDesired - 8) + 'px';
+                    } else {
+                        mobileFlyout.style.top = Math.max(margin, below) + 'px';
+                    }
+
+                    // ensure scrollable if content exceeds available height
+                    mobileFlyout.style.maxHeight = Math.min(vh - (margin * 4),  Math.max(300, Math.round(vh * 0.7))) + 'px';
+                    mobileFlyout.style.overflowY = 'auto';
+                } catch (err) {
+                    // best-effort; ignore failures
+                }
+            }
+
+            mobileBtn.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                const isOpen = mobileFlyout.getAttribute('aria-hidden') === 'false';
+                if (isOpen) {
+                    mobileFlyout.setAttribute('aria-hidden', 'true');
+                    mobileBtn.setAttribute('aria-expanded', 'false');
+                    return;
+                }
+
+                // position and open
+                positionMobileFlyout();
+                // compute a simple caret offset so the little arrow points to the toggle
+                try {
+                    const btnRect = mobileBtn.getBoundingClientRect();
+                    const flyRect = mobileFlyout.getBoundingClientRect();
+                    // Compute caret left relative to flyout left; use clamp so it stays inside
+                    let left = (btnRect.left + btnRect.width / 2) - flyRect.left;
+                    left = Math.max(18, Math.min(left, flyRect.width - 18));
+                    mobileFlyout.style.setProperty('--flyout-caret-left', left + 'px');
+                } catch (err) { /* ignore */ }
+                mobileFlyout.setAttribute('aria-hidden', 'false');
+                mobileBtn.setAttribute('aria-expanded', 'true');
+
+                // move focus into the flyout for accessibility
+                try {
+                    const focusable = mobileFlyout.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (focusable) focusable.focus();
+                } catch (e) {}
+                // set up a simple focus-trap while flyout is open
+                try {
+                    const focusableEls = Array.from(mobileFlyout.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(el => !el.disabled && el.offsetParent !== null);
+                    if (focusableEls.length) {
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+                        // keydown handler for trapping Tab
+                        const trapHandler = function(ev) {
+                            if (ev.key !== 'Tab') return;
+                            if (ev.shiftKey) {
+                                if (document.activeElement === firstEl) {
+                                    ev.preventDefault();
+                                    lastEl.focus();
+                                }
+                            } else {
+                                if (document.activeElement === lastEl) {
+                                    ev.preventDefault();
+                                    firstEl.focus();
+                                }
+                            }
+                        };
+                        // attach temporarily on document
+                        document.addEventListener('keydown', trapHandler);
+                        // store reference so we can remove it when the flyout closes
+                        mobileFlyout._trapHandler = trapHandler;
+                    }
+                } catch (err) { /* ignore */ }
+            });
+
+            // reposition on orientation/viewport change while open
+            window.addEventListener('orientationchange', () => { if (mobileFlyout && mobileFlyout.getAttribute('aria-hidden') === 'false') positionMobileFlyout(); });
+            window.addEventListener('resize', () => { if (mobileFlyout && mobileFlyout.getAttribute('aria-hidden') === 'false') positionMobileFlyout(); });
+
+            // close when clicking outside
+            // close when clicking outside
+            document.addEventListener('click', (ev) => {
+                if (!mobileFlyout || !mobileBtn) return;
+                if (mobileFlyout.getAttribute('aria-hidden') === 'false') {
+                    if (!mobileFlyout.contains(ev.target) && !mobileBtn.contains(ev.target)) {
+                        mobileFlyout.setAttribute('aria-hidden', 'true');
+                        mobileBtn.setAttribute('aria-expanded', 'false');
+                        // remove any focus-trap handler
+                        try { if (mobileFlyout._trapHandler) { document.removeEventListener('keydown', mobileFlyout._trapHandler); mobileFlyout._trapHandler = null; } } catch(e){}
+                    }
+                }
+            });
+            // Allow closing the flyout with Escape for accessibility
+            document.addEventListener('keydown', (ev) => {
+                if (!mobileFlyout || mobileFlyout.getAttribute('aria-hidden') === 'true') return;
+                if (ev.key === 'Escape' || ev.key === 'Esc') {
+                    mobileFlyout.setAttribute('aria-hidden', 'true');
+                    mobileBtn.setAttribute('aria-expanded', 'false');
+                    try { mobileBtn.focus(); } catch (e) {}
+                    try { if (mobileFlyout._trapHandler) { document.removeEventListener('keydown', mobileFlyout._trapHandler); mobileFlyout._trapHandler = null; } } catch(e){}
+                }
+            });
+            // auto-close when selecting a preset, changing language, or toggling effects inside the mobile menu
+            if (mobileInner) {
+                mobileInner.addEventListener('click', (ev) => {
+                    const p = ev.target.closest && ev.target.closest('.preset-btn');
+                    const l = ev.target.closest && ev.target.closest('.lang-item-btn');
+                    const e = ev.target.closest && ev.target.closest('#effects-toggle');
+                    if (p || l || e) {
+                        // close menu after a tiny delay to allow the click handler to run
+                        setTimeout(() => {
+                            if (mobileFlyout) mobileFlyout.setAttribute('aria-hidden', 'true');
+                            if (mobileBtn) mobileBtn.setAttribute('aria-expanded', 'false');
+                        }, 120);
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('resize', updateMobileMenuPlacement);
+        updateMobileMenuPlacement();
+    } catch (e) { /* no-op */ }
 });

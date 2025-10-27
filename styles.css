@@ -167,25 +167,23 @@ body{
     /* Keep accent links and buttons readable but subtly adjusted for dark */
     body.dark-mode a, body.dark-mode .accent-link { color: var(--accent-primary); }
 
+     /* Ensure commonly used light-background utility classes render dark in dark-mode
+         This avoids cases where a component (file info, upload area) remains white while text becomes light */
+     body.dark-mode .bg-violet-50 { background: linear-gradient(180deg, rgba(15,20,28,0.56), rgba(6,10,18,0.6)); border-color: rgba(255,255,255,0.03); }
+     body.dark-mode .bg-white { background: var(--bg-primary) !important; color: var(--text-primary) !important; border-color: rgba(255,255,255,0.04) !important }
+     body.dark-mode .cute-upload-area { background: linear-gradient(180deg, rgba(15,18,28,0.36), rgba(8,10,16,0.28)); border-color: rgba(255,255,255,0.04); }
+     body.dark-mode .lang-flyout-content, body.dark-mode .preset-segment, body.dark-mode .preset-btn { background: transparent }
+
     /* Effects toggle visuals */
     .effects-control{ display:inline-flex;align-items:center;gap:8px }
     .effects-state{ font-size:.78rem;color:var(--text-secondary);background:rgba(0,0,0,0.04);padding:4px 8px;border-radius:9999px;border:1px solid var(--border-color);min-width:34px;text-align:center }
-    .paused-badge{ display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--border-color) }
-    body.effects-paused-hidden .paused-badge{ display:inline-flex }
+    /* paused-badge removed by user request */
 
     /* Accessibility and reduced motion */
     @media (prefers-reduced-motion: reduce){ .bg-dunes .dune, .bg-canvas, .loader, .cute-upload-area { animation-play-state:paused !important; transition:none !important } }
 
     /* Responsive */
-    @media (max-width: 640px){
-      .top-controls{ right:10px; left:auto; padding:5px; gap:6px }
-      #app{ margin:1rem; padding:1rem }
-      .cute-upload-area{ height:auto; min-height:12rem }
-      .theme-toggle, .effects-toggle, .lang-selector #lang-button{ padding:7px;border-radius:10px }
-      .effects-state{ display:none }
-            .preset-select{ min-width:72px; font-size:0.78rem; padding:6px }
-    }
-
+    /* Tablet breakpoint: only adjust app padding */
     @media (min-width:641px) and (max-width:1024px){ #app{ padding:1.5rem } }
 
     /* Utility */
@@ -204,21 +202,7 @@ body{
     body.dark-mode header::after{ background: radial-gradient(circle at 30% 30%, rgba(159,122,234,0.06), transparent 30%) }
     
 
-/* paused badge shown when tab hidden/animations paused */
-.paused-badge {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.06);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
-body.effects-paused-hidden .paused-badge { display: inline-flex; }
-body.effects-paused-hidden .effects-state { opacity: 0.65; }
+/* paused-badge removed by user request */
 
 /* Position flyout under the language button when in the top-controls */
 .top-controls .lang-flyout {
@@ -240,137 +224,218 @@ body.effects-paused-hidden .effects-state { opacity: 0.65; }
 }
 
 /* Ensure the theme toggle and language selector don't overlap on small screens */
-@media (max-width: 420px) {
-    .top-controls { gap: 6px; top: 10px; right: 10px; }
-    .theme-toggle { width: 44px; height: 44px; }
-    .top-controls .lang-flyout { width: 220px; }
+    /* ======================================== */
+    /* MOBILE-FIRST RESPONSIVE (≤ 900px)      */
+    /* ======================================== */
+    @media (max-width: 900px) {
+        /* Move top-controls into app as a fixed navbar */
+        .top-controls.moved-to-app {
+            position: fixed !important;
+            top: calc(env(safe-area-inset-top, 8px) + 8px) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: calc(100% - 2rem) !important;
+            max-width: 820px !important;
+            margin: 0 !important;
+            padding: 10px 14px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(2,6,23,0.12) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95)) !important;
+            z-index: 2400 !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            animation: slideDownFade .22s ease both;
+        }
+        body.dark-mode .top-controls.moved-to-app {
+            background: linear-gradient(180deg, rgba(11,18,28,0.88), rgba(8,12,22,0.82)) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+        }
 
-    /* Mobile: place top-controls in the document flow to avoid overlapping content
-       Keep controls above the app and organize into two visual rows using wrapping
-       Row 1: theme + language left, effects/paused right
-       Row 2: centered presets that can wrap when needed */
-    .top-controls {
-        position: static;
-        right: auto;
-        top: auto;
-        left: auto;
-        margin: 0 1rem 0.85rem;
-        width: calc(100% - 2rem);
-        padding: 8px;
-        background: rgba(255,255,255,0.9);
-        align-items: center;
-        gap: 8px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        border-radius: 12px;
-        box-shadow: var(--shadow-sm);
+        /* Hide presets and effects in top-controls; they're moved to the flyout */
+        .top-controls > .preset-control,
+        .top-controls > .effects-control {
+            display: none !important;
+        }
+
+        /* Show the three-dot menu button */
+        .mobile-menu-button {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            cursor: pointer;
+            z-index: 2220;
+            position: relative;
+            pointer-events: auto;
+        }
+        .mobile-menu-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+        }
+        .mobile-menu-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .mobile-menu-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Mobile flyout menu styling */
+        .mobile-menu-flyout {
+            position: fixed !important;
+            top: calc(env(safe-area-inset-top, 12px) + 64px) !important;
+            left: 50% !important;
+            transform: translateX(-50%) translateY(0) !important;
+            width: clamp(260px, 86%, 420px) !important;
+            max-width: calc(100% - 24px) !important;
+            max-height: calc(100vh - (env(safe-area-inset-top, 12px) + 96px)) !important;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95)) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 28px 56px rgba(2,6,23,0.42) !important;
+            border-radius: 14px !important;
+            padding: 12px !important;
+            z-index: 2350 !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+        }
+        body.dark-mode .mobile-menu-flyout {
+            background: linear-gradient(180deg, rgba(11,18,28,0.92), rgba(8,12,22,0.88)) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+        }
+
+        /* Show/hide flyout based on aria-hidden */
+        .mobile-menu-flyout[aria-hidden="true"] {
+            display: none !important;
+            visibility: hidden;
+        }
+        .mobile-menu-flyout[aria-hidden="false"] {
+            display: block !important;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Caret pointing up from flyout to the button */
+        .mobile-menu-flyout::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+            border-left: 1px solid rgba(0,0,0,0.04);
+            border-top: 1px solid rgba(0,0,0,0.04);
+            box-shadow: -2px -2px 6px rgba(2,6,23,0.06);
+            z-index: -1;
+        }
+        body.dark-mode .mobile-menu-flyout::after {
+            background: linear-gradient(180deg, rgba(11,18,28,0.92), rgba(8,12,22,0.88));
+        }
+
+        /* Flyout inner content - horizontal scroll on small phones */
+        .mobile-menu-inner {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 10px !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            padding: 8px 6px !important;
+            align-items: stretch;
+        }
+        .mobile-menu-inner > * {
+            flex: 0 0 auto;
+            min-width: 140px;
+            max-width: calc(100% - 40px);
+            white-space: normal;
+        }
+
+        /* Preset buttons inside flyout */
+        .mobile-menu-inner .preset-btn,
+        .mobile-menu-inner .lang-item-btn,
+        .mobile-menu-inner #effects-toggle {
+            width: auto !important;
+            padding: 10px 14px !important;
+            text-align: left;
+            justify-content: flex-start;
+            border-radius: 10px;
+        }
+        .mobile-menu-inner .preset-btn {
+            background: transparent;
+        }
+
+        /* Focus styles for keyboard users in flyout */
+        .mobile-menu-flyout :focus {
+            outline: 2px solid rgba(99,102,241,0.95);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        /* App card gets padding to avoid navbar overlap */
+        #app {
+            margin-top: calc(env(safe-area-inset-top, 8px) + 84px) !important;
+            padding-top: 1rem !important;
+        }
+
+        /* Adjust upload area on mobile */
+        .cute-upload-area {
+            height: auto !important;
+            min-height: 10rem;
+            padding: 1rem !important;
+        }
+
+        /* Compact top-controls when moved to app */
+        .top-controls.moved-to-app .theme-toggle,
+        .top-controls.moved-to-app .lang-selector {
+            flex: 0 0 auto;
+        }
+
+        /* Order: theme + language on left, three-dot on right */
+        .top-controls.moved-to-app > .theme-toggle {
+            order: 1;
+            margin-right: 8px;
+        }
+        .top-controls.moved-to-app > .lang-selector {
+            order: 2;
+        }
+        .top-controls.moved-to-app > .mobile-menu {
+            order: 3;
+            margin-left: auto;
+        }
+
+        /* Responsive adjustments for dunes animation */
+        .bg-dunes .dune-1{ bottom: -10vh; }
+        .bg-dunes .dune-2{ bottom: -14vh; }
+        .bg-dunes .dune-3{ bottom: -18vh; }
+
+        /* Reduce body overflow on mobile */
+        html, body {
+            overflow-x: hidden;
+        }
     }
-    body.dark-mode .top-controls { background: rgba(6,8,20,0.54); }
 
-    /* Ordering to create two logical rows via wrapping */
-    .top-controls > .theme-toggle { order: 1; margin-right: 8px; }
-    .top-controls > .lang-selector { order: 1; margin-right: 6px; }
-    .top-controls > .preset-control { order: 2; flex-basis: 100%; display:flex; justify-content:center; margin:6px 0 0 0 }
-    .top-controls > .effects-control, .top-controls > #paused-badge { order: 3; margin-left: auto }
-    body.dark-mode .top-controls { background: rgba(6,8,20,0.48); }
-
-    /* Layout ordering so the left toggles, center presets, and right-side controls align nicely */
-    .top-controls > .theme-toggle { order: 1; margin-right: 6px; }
-    .top-controls > .preset-control { order: 2; flex: 1 1 auto; display:flex; justify-content:center; min-width:120px }
-    .top-controls > .effects-control, .top-controls > .paused-badge, .top-controls > .lang-selector { order: 3; display:flex; gap:8px; align-items:center }
-
-    /* Allow preset buttons to wrap and reduce padding; keep icons visible and labels optional on very narrow screens */
-    .preset-segment { flex-wrap: wrap; gap:8px; }
-    .preset-btn { padding:10px 12px; font-size:0.95rem; min-width:72px; border-radius:12px; color:var(--text-secondary) }
-    .preset-btn svg { width:18px; height:18px; }
-    /* Preserve labels for most phone sizes for clarity; hide only on the smallest narrow phones */
-    @media (max-width: 420px){ .preset-btn { padding:8px 10px; font-size:0.88rem; } }
-    @media (max-width: 360px){ .preset-btn span { display:none; } }
-
-    .top-controls .lang-selector #lang-button { height:40px; padding:0 8px; min-width:48px; }
-
-    /* small spacing between controls and the main app card */
-    #app { margin-top: 0.5rem; }
-}
-
-@media (max-width: 420px) {
-    .top-controls .lang-selector #lang-button { height: 40px; padding: 0 8px; font-size: 0.95rem; }
-}
-/* Background container and theme-specific visibility (defined earlier) - duplicate block removed to keep stylesheet concise */
-
-/* Responsive improvements for mobile devices */
-@media (max-width: 640px) {
-    body {
-        align-items: flex-start; /* keep content from centering vertically on small screens */
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+    /* Slide-down animation for navbar */
+    @keyframes slideDownFade {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     }
 
-    #app {
-        width: calc(100% - 2rem) !important;
-        max-width: none !important;
-        margin: 0 1rem;
-        padding: 1rem !important;
-        border-radius: 12px;
+    /* Tablet breakpoint: larger padding */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        #app { padding: 1.5rem !important; }
+        .cute-upload-area { min-height: 12rem; }
     }
-
-    .cute-upload-area {
-        height: auto !important;
-        min-height: 10rem; /* ~160px */
-        padding: 1rem !important;
-        text-align: center;
-    }
-
-    .theme-toggle {
-        width: 44px;
-        height: 44px;
-    }
-
-    .effects-toggle { width: 38px; height: 38px; }
-
-    header h1 {
-        font-size: 1.375rem; /* smaller headline on phones */
-    }
-
-    .lang-flyout {
-        right: 0 !important;
-        left: 8px !important;
-        width: calc(100% - 32px) !important;
-        max-width: calc(100% - 32px) !important;
-    }
-
-    .lang-flyout-content {
-        padding: 8px !important;
-        border-radius: 10px;
-    }
-
-    #control-section .bg-violet-50,
-    #result-section {
-        padding: 1rem !important;
-    }
-
-    #compress-button, #download-button, #alert-close-btn {
-        padding: 0.9rem 1rem !important;
-        font-size: 1rem !important;
-    }
-
-    /* Ensure loader overlay covers properly on small screens */
-    #loading-overlay {
-        border-radius: 12px;
-    }
-
-    /* Reduce dune vertical offsets and slow animations slightly on phones so they don't feel overpowering */
-    .bg-dunes .dune-1{ bottom:-10vh; animation-duration:26s }
-    .bg-dunes .dune-2{ bottom:-14vh; animation-duration:30s }
-    .bg-dunes .dune-3{ bottom:-18vh; animation-duration:34s }
-
-    /* Ensure canvas scales and doesn't overflow on mobile */
-    .bg-canvas { background-size: cover; }
-}
-
-/* Slightly larger touch targets for medium screens (tablet) */
-@media (min-width: 641px) and (max-width: 1024px) {
-    #app { padding: 1.5rem !important; }
-    .cute-upload-area { min-height: 12rem; }
-}
